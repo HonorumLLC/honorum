@@ -45,6 +45,44 @@ Use these launch arguments for local tests and screenshots:
 
 ## Release
 
+The [iOS workflow](../../.github/workflows/ios.yml) ships two channels:
+
+| Branch | Channel | What happens |
+| --- | --- | --- |
+| `beta` | TestFlight | App changes are built, signed, uploaded, and offered to the **Honorum Internal** group |
+| `main` | App Store | Promoting beta submits that same TestFlight build for review; it goes live on approval |
+
+The workflow runs when `apps/ios/Honorum`, the Xcode project, or
+`apps/ios/release-notes.txt` changes. It can also be started by hand.
+
+- Raise `MARKETING_VERSION` on beta when the next release starts.
+  An approved version cannot take another build.
+- Build numbers are the UTC date and that day's count, such as `2026102103`.
+  CI chooses the next one above every earlier upload.
+- Each TestFlight build records its source in **What to Test**: the commit and
+  a hash of the app and project trees. Promotion submits the build whose hash
+  matches main. Promote only after beta's iOS run has finished.
+- Updates need `apps/ios/release-notes.txt`, which becomes **What's New** in
+  every App Store localization. The first release has none.
+- A version that is waiting for or in review cannot be replaced by CI.
+  Cancel it in App Store Connect first, or raise the version.
+
+The workflow uses these repository secrets:
+
+| Secret | Contents |
+| --- | --- |
+| `APP_STORE_CONNECT_KEY_ID` | App Store Connect API key ID |
+| `APP_STORE_CONNECT_ISSUER_ID` | The key's issuer ID |
+| `APP_STORE_CONNECT_KEY` | The `.p8` key file's contents |
+| `IOS_DISTRIBUTION_P12` | Base64 of an exported Apple Distribution certificate and key |
+| `IOS_DISTRIBUTION_P12_PASSWORD` | The `.p12` export password |
+
+The API key needs the Admin role, so it can create the App Store profile for
+a new certificate. [The App Store Connect script](scripts/appstore.mjs)
+finds or creates that profile, picks build numbers, labels builds, and submits.
+
+### Local releases
+
 The [release script](scripts/release.sh) has three modes:
 
 | Mode | Effect |
@@ -70,6 +108,8 @@ Set a new `HONORUM_BUILD_NUMBER` for each upload.
 App Store Connect rejects a repeated build number for the same version.
 
 Sign in under Xcode > Settings > Accounts before a signed archive.
+CI sets `HONORUM_PROVISIONING_PROFILE` and the `HONORUM_ASC_*` key variables
+instead, which switch the script to manual distribution signing.
 Pass the team and build number through the environment.
 Keep private keys and certificates out of Git.
 Automatic export uses Xcode-managed distribution credentials.
