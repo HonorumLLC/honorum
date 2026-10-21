@@ -1,0 +1,199 @@
+{
+  "base_url": "http://localhost:8080",
+  "contact": "mailto:support@honorum.app",
+  "poll_seconds": 120,
+  "catalog_hours": 6,
+  "debounce_minutes": 30,
+  "institutions": [
+    {
+      "id": "ou",
+      "name": "University of Oklahoma",
+      "adapter": "ou",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://canvas.ou.edu"
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "id": "tamu",
+      "name": "Texas A&M University",
+      "adapter": "tamu",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://canvas.tamu.edu"
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "id": "ivytech",
+      "name": "Ivy Tech Community College",
+      "adapter": "civitas",
+      "env": "ivytech",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://ivylearn.ivytech.edu"
+      },
+      "timezone": "America/Indiana/Indianapolis"
+    },
+    {
+      "id": "ua",
+      "name": "University of Alabama",
+      "adapter": "banner",
+      "url": "https://bannerssb.ua.edu/StudentRegistrationSsb/ssb",
+      "lms": {
+        "kind": "blackboard",
+        "url": "https://ualearn.blackboard.com"
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "id": "gsu",
+      "name": "Georgia State University",
+      "adapter": "banner",
+      "url": "https://registration.gosolar.gsu.edu/StudentRegistrationSsb/ssb",
+      "lms": {
+        "kind": "brightspace",
+        "url": "https://gastate.view.usg.edu"
+      },
+      "timezone": "America/New_York"
+    },
+    {
+      "id": "utsa",
+      "name": "University of Texas at San Antonio",
+      "adapter": "banner",
+      "url": "https://ssbprod.utsa.edu/StudentRegistrationSsb/ssb",
+      "timezone": "America/Chicago"
+    },
+    {
+      "id": "neu",
+      "name": "Northeastern University",
+      "adapter": "banner",
+      "url": "https://nubanner.neu.edu/StudentRegistrationSsb/ssb",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://northeastern.instructure.com"
+      },
+      "timezone": "America/New_York"
+    },
+    {
+      "id": "fau",
+      "name": "Florida Atlantic University",
+      "adapter": "banner",
+      "url": "https://bannerxe.fau.edu/StudentRegistrationSsb/ssb",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://canvas.fau.edu"
+      },
+      "timezone": "America/New_York"
+    },
+    {
+      "id": "uta",
+      "name": "University of Texas at Arlington",
+      "adapter": "civitas",
+      "env": "uta",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://uta.instructure.com"
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "id": "uc",
+      "name": "University of Cincinnati",
+      "adapter": "civitas",
+      "env": "uc",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://canopy.uc.edu"
+      },
+      "timezone": "America/New_York"
+    },
+    {
+      "id": "colorado",
+      "name": "University of Colorado Boulder",
+      "adapter": "fose",
+      "url": "https://classes.colorado.edu",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://canvas.colorado.edu"
+      },
+      "timezone": "America/Denver"
+    },
+    {
+      "id": "vt",
+      "name": "Virginia Tech",
+      "adapter": "fose",
+      "url": "https://classes.vt.edu",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://canvas.vt.edu"
+      },
+      "timezone": "America/New_York"
+    },
+    {
+      "id": "sc",
+      "name": "University of South Carolina",
+      "adapter": "fose",
+      "url": "https://classes.sc.edu",
+      "lms": {
+        "kind": "blackboard",
+        "url": "https://blackboard.sc.edu"
+      },
+      "timezone": "America/New_York"
+    },
+    {
+      "id": "oregonstate",
+      "name": "Oregon State University",
+      "adapter": "fose",
+      "url": "https://classes.oregonstate.edu",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://canvas.oregonstate.edu"
+      },
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "id": "uark",
+      "name": "University of Arkansas",
+      "adapter": "fose",
+      "url": "https://classes.uark.edu",
+      "lms": {
+        "kind": "blackboard",
+        "url": "https://learn.uark.edu"
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "id": "illinois",
+      "name": "University of Illinois Urbana-Champaign",
+      "adapter": "illinois",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://canvas.illinois.edu"
+      },
+      "timezone": "America/Chicago"
+    },
+    {
+      "id": "uci",
+      "name": "University of California, Irvine",
+      "adapter": "uci",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://canvas.eee.uci.edu"
+      },
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "id": "rutgers",
+      "name": "Rutgers University-New Brunswick",
+      "adapter": "rutgers",
+      "env": "NB",
+      "lms": {
+        "kind": "canvas",
+        "url": "https://canvas.rutgers.edu"
+      },
+      "timezone": "America/New_York"
+    }
+  ]
+}

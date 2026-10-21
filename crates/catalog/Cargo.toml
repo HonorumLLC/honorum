@@ -1,0 +1,26 @@
+[package]
+name = "honorum-catalog"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[dependencies]
+async-trait = "0.1.92"
+bytes = "1.12.1"
+chrono = "0.4.45"
+flate2 = "1.1"
+rand = "0.10.3"
+regex = "1.13.1"
+reqwest = { version = "0.13.5", default-features = false, features = ["rustls", "json", "gzip", "brotli", "http2", "charset", "query", "form"] }
+roxmltree = "0.21.1"
+scraper = "0.27.0"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+thiserror = "2.0.21"
+tokio = { version = "1.53.3", features = ["full"] }
+url = "2.5.8"
+
+[lints]
+workspace = true

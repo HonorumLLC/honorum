@@ -1,0 +1,30 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+  - package-ecosystem: npm
+    directories:
+      - /apps/web
+      - /deploy/cloudflare
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # svelte-check 4.x only supports TypeScript 5 and 6. Remove this once a
+      # svelte-check release accepts TypeScript 7 as a peer dependency.
+      - dependency-name: typescript
+        update-types:
+          - version-update:semver-major

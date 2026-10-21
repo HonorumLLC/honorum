@@ -1,0 +1,641 @@
+{
+  "_comment": "Days when classes do not meet, per institution, for the 2026-27 academic year. Transcribed by hand from each registrar's published calendar (source); ranges are inclusive and may span weekends. A 'follows' entry means that date runs another weekday's class schedule (M T W R F). An 'after' entry cancels only classes starting at or after that campus time, in minutes after midnight (900 is 3 p.m.). Update once a year. OU's Fall Student Holiday is not on the registrar's calendar; the Provost announces it each August (ou.edu/content/dam/provost/provost-new/files/communications/Fall-Student-Holiday-YYYY.pdf).",
+  "demo": {
+    "source": "fixture",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-10-15",
+        "to": "2026-10-16",
+        "name": "Fall Break"
+      },
+      {
+        "from": "2026-11-25",
+        "to": "2026-11-29",
+        "name": "Thanksgiving Break"
+      }
+    ]
+  },
+  "ou": {
+    "source": "https://www.ou.edu/registrar/academic-records/academic-calendars",
+    "days": [
+      {
+        "from": "2026-09-04",
+        "to": "2026-09-04",
+        "name": "Campus Closed"
+      },
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-10-09",
+        "to": "2026-10-09",
+        "name": "Fall Student Holiday"
+      },
+      {
+        "from": "2026-10-29",
+        "to": "2026-10-29",
+        "name": "Showtime on the Soval",
+        "after": 900
+      },
+      {
+        "from": "2026-11-25",
+        "to": "2026-11-29",
+        "name": "Thanksgiving Vacation"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-03-15",
+        "to": "2027-03-19",
+        "name": "Spring Vacation"
+      }
+    ]
+  },
+  "tamu": {
+    "source": "https://registrar.tamu.edu/academic-calendar/",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-11-25",
+        "to": "2026-11-25",
+        "name": "Reading Day"
+      },
+      {
+        "from": "2026-11-26",
+        "to": "2026-11-27",
+        "name": "Thanksgiving"
+      },
+      {
+        "from": "2026-12-04",
+        "to": "2026-12-04",
+        "name": "Reading Day"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-03-15",
+        "to": "2027-03-19",
+        "name": "Spring Break"
+      },
+      {
+        "from": "2027-03-26",
+        "to": "2027-03-26",
+        "name": "Reading Day"
+      },
+      {
+        "from": "2027-05-05",
+        "to": "2027-05-05",
+        "name": "Reading Day"
+      }
+    ]
+  },
+  "ivytech": {
+    "source": "https://calendar.google.com/calendar/ical/ivytech.calendars%40gmail.com/public/basic.ics",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-10-19",
+        "to": "2026-10-25",
+        "name": "Fall Break"
+      },
+      {
+        "from": "2026-11-26",
+        "to": "2026-11-29",
+        "name": "Thanksgiving Break"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-03-08",
+        "to": "2027-03-14",
+        "name": "Spring Break"
+      }
+    ]
+  },
+  "ua": {
+    "source": "https://registrar.ua.edu/academiccalendar/",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-10-29",
+        "to": "2026-10-30",
+        "name": "Mid-Semester Study Break"
+      },
+      {
+        "from": "2026-11-23",
+        "to": "2026-11-27",
+        "name": "Thanksgiving Week"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-03-20",
+        "to": "2027-03-28",
+        "name": "Spring Break"
+      }
+    ]
+  },
+  "gsu": {
+    "source": "https://registrar.gsu.edu/registration/semester-calendars-exam-schedules/",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-11-23",
+        "to": "2026-11-27",
+        "name": "Thanksgiving Break"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-03-15",
+        "to": "2027-03-21",
+        "name": "Spring Break"
+      }
+    ]
+  },
+  "utsa": {
+    "source": "https://www.utsa.edu/registrar/files/AcademicCal.pdf",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-10-12",
+        "to": "2026-10-13",
+        "name": "Fall Break"
+      },
+      {
+        "from": "2026-11-26",
+        "to": "2026-11-28",
+        "name": "Thanksgiving"
+      },
+      {
+        "from": "2026-12-04",
+        "to": "2026-12-04",
+        "name": "Study Day"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-03-08",
+        "to": "2027-03-13",
+        "name": "Spring Break"
+      },
+      {
+        "from": "2027-05-07",
+        "to": "2027-05-07",
+        "name": "Study Day"
+      }
+    ]
+  },
+  "neu": {
+    "source": "https://registrar.northeastern.edu/article/academic-calendar/",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-10-12",
+        "to": "2026-10-12",
+        "name": "Indigenous Peoples Day"
+      },
+      {
+        "from": "2026-11-11",
+        "to": "2026-11-11",
+        "name": "Veterans Day"
+      },
+      {
+        "from": "2026-11-25",
+        "to": "2026-11-29",
+        "name": "Fall Break"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-02-15",
+        "to": "2027-02-15",
+        "name": "Presidents Day"
+      },
+      {
+        "from": "2027-03-08",
+        "to": "2027-03-14",
+        "name": "Spring Break"
+      },
+      {
+        "from": "2027-03-26",
+        "to": "2027-03-26",
+        "name": "Good Friday"
+      },
+      {
+        "from": "2027-04-19",
+        "to": "2027-04-19",
+        "name": "Patriots Day"
+      }
+    ]
+  },
+  "fau": {
+    "source": "https://www.fau.edu/registrar/calendar/",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-09-21",
+        "to": "2026-09-21",
+        "name": "Fall Break"
+      },
+      {
+        "from": "2026-11-11",
+        "to": "2026-11-11",
+        "name": "Veterans Day"
+      },
+      {
+        "from": "2026-11-25",
+        "to": "2026-11-29",
+        "name": "Thanksgiving Break"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-03-06",
+        "to": "2027-03-12",
+        "name": "Spring Break"
+      }
+    ]
+  },
+  "uta": {
+    "source": "https://www.uta.edu/academics/academic-calendar",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-11-25",
+        "to": "2026-11-27",
+        "name": "Thanksgiving Break"
+      },
+      {
+        "from": "2026-12-02",
+        "to": "2026-12-02",
+        "name": "Study Day"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-03-08",
+        "to": "2027-03-12",
+        "name": "Spring Vacation"
+      },
+      {
+        "from": "2027-04-28",
+        "to": "2027-04-28",
+        "name": "Study Day"
+      }
+    ]
+  },
+  "uc": {
+    "source": "https://www.uc.edu/about/registrar/calendars/academic-year-calendars/2026-2027.html",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-10-12",
+        "to": "2026-10-12",
+        "name": "Reading Day"
+      },
+      {
+        "from": "2026-11-03",
+        "to": "2026-11-03",
+        "name": "Reading Day"
+      },
+      {
+        "from": "2026-11-11",
+        "to": "2026-11-11",
+        "name": "Veterans Day"
+      },
+      {
+        "from": "2026-11-26",
+        "to": "2026-11-29",
+        "name": "Thanksgiving"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-03-15",
+        "to": "2027-03-21",
+        "name": "Spring Break"
+      }
+    ]
+  },
+  "colorado": {
+    "source": "https://www.colorado.edu/registrar/students/calendar",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-10-08",
+        "to": "2026-10-08",
+        "name": "Reading Day"
+      },
+      {
+        "from": "2026-11-23",
+        "to": "2026-11-27",
+        "name": "Fall Break"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-02-25",
+        "to": "2027-02-25",
+        "name": "Reading Day"
+      },
+      {
+        "from": "2027-03-15",
+        "to": "2027-03-19",
+        "name": "Spring Break"
+      }
+    ]
+  },
+  "vt": {
+    "source": "https://www.registrar.vt.edu/dates-deadlines/academic-calendar.html",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-10-09",
+        "to": "2026-10-09",
+        "name": "Fall Break"
+      },
+      {
+        "from": "2026-11-21",
+        "to": "2026-11-29",
+        "name": "Thanksgiving Break"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-03-06",
+        "to": "2027-03-14",
+        "name": "Spring Break"
+      }
+    ]
+  },
+  "sc": {
+    "source": "https://sc.edu/about/offices_and_divisions/registrar/academic_calendars/2026-27_calendar.php",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-10-15",
+        "to": "2026-10-16",
+        "name": "Fall Break"
+      },
+      {
+        "from": "2026-11-03",
+        "to": "2026-11-03",
+        "name": "Election Day"
+      },
+      {
+        "from": "2026-11-22",
+        "to": "2026-11-29",
+        "name": "Thanksgiving Recess"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-03-07",
+        "to": "2027-03-14",
+        "name": "Spring Break"
+      }
+    ]
+  },
+  "oregonstate": {
+    "source": "https://registrar.oregonstate.edu/osu-academic-calendar",
+    "days": [
+      {
+        "from": "2026-11-11",
+        "to": "2026-11-11",
+        "name": "Veterans Day"
+      },
+      {
+        "from": "2026-11-26",
+        "to": "2026-11-27",
+        "name": "Thanksgiving"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-05-31",
+        "to": "2027-05-31",
+        "name": "Memorial Day"
+      }
+    ]
+  },
+  "uark": {
+    "source": "https://registrar.uark.edu/academic-dates/",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-10-19",
+        "to": "2026-10-20",
+        "name": "Fall Break"
+      },
+      {
+        "from": "2026-11-25",
+        "to": "2026-11-27",
+        "name": "Thanksgiving"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-03-22",
+        "to": "2027-03-26",
+        "name": "Spring Break"
+      }
+    ]
+  },
+  "illinois": {
+    "source": "https://registrar.illinois.edu/faculty-staff/calendars/academic-calendars/",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-11-21",
+        "to": "2026-11-29",
+        "name": "Fall Break"
+      },
+      {
+        "from": "2026-12-10",
+        "to": "2026-12-10",
+        "name": "Reading Day"
+      },
+      {
+        "from": "2027-03-13",
+        "to": "2027-03-21",
+        "name": "Spring Break"
+      },
+      {
+        "from": "2027-05-06",
+        "to": "2027-05-06",
+        "name": "Reading Day"
+      }
+    ]
+  },
+  "uci": {
+    "source": "https://www.reg.uci.edu/navigation/calendars.html",
+    "days": [
+      {
+        "from": "2026-11-11",
+        "to": "2026-11-11",
+        "name": "Veterans Day"
+      },
+      {
+        "from": "2026-11-26",
+        "to": "2026-11-27",
+        "name": "Thanksgiving"
+      },
+      {
+        "from": "2027-01-18",
+        "to": "2027-01-18",
+        "name": "Martin Luther King Jr. Day"
+      },
+      {
+        "from": "2027-02-15",
+        "to": "2027-02-15",
+        "name": "Presidents Day"
+      },
+      {
+        "from": "2027-05-31",
+        "to": "2027-05-31",
+        "name": "Memorial Day"
+      }
+    ]
+  },
+  "rutgers": {
+    "source": "https://scheduling.rutgers.edu/scheduling/academic-calendar",
+    "days": [
+      {
+        "from": "2026-09-07",
+        "to": "2026-09-07",
+        "name": "Labor Day"
+      },
+      {
+        "from": "2026-09-08",
+        "to": "2026-09-08",
+        "name": "Monday Classes Meet",
+        "follows": "M"
+      },
+      {
+        "from": "2026-11-25",
+        "to": "2026-11-25",
+        "name": "Friday Classes Meet",
+        "follows": "F"
+      },
+      {
+        "from": "2026-11-26",
+        "to": "2026-11-29",
+        "name": "Thanksgiving Recess"
+      },
+      {
+        "from": "2027-03-13",
+        "to": "2027-03-21",
+        "name": "Spring Recess"
+      }
+    ]
+  }
+}

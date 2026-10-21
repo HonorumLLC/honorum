@@ -1,0 +1,573 @@
+[
+ {
+  "campusLocations": [
+   {
+    "code": "1",
+    "description": "College Avenue"
+   },
+   {
+    "code": "2",
+    "description": "Busch"
+   },
+   {
+    "code": "3",
+    "description": "Livingston"
+   }
+  ],
+  "subject": "198",
+  "openSections": 8,
+  "synopsisUrl": "http://www.cs.rutgers.edu/undergraduate/courses/",
+  "title": "INTRO COMPUTER SCI",
+  "preReqNotes": "Any Course EQUAL or GREATER Than: (01:640:112 PRECALCULUS PART II )",
+  "courseString": "01:198:111",
+  "school": {
+   "code": "01",
+   "description": "School of Arts and Sciences"
+  },
+  "credits": 4,
+  "subjectDescription": "Computer Science",
+  "coreCodes": [
+   {
+    "id": "2026901198111  21",
+    "year": "2026",
+    "term": "9",
+    "description": "Information Technology and Research",
+    "lastUpdated": 1468423768000,
+    "course": "111",
+    "subject": "198",
+    "offeringUnitCode": "01",
+    "offeringUnitCampus": "NB",
+    "code": "ITR",
+    "unit": "01",
+    "effective": "20269",
+    "coreCodeReferenceId": "21",
+    "coreCode": "ITR",
+    "coreCodeDescription": "Information Technology and Research",
+    "supplement": "  "
+   },
+   {
+    "id": "2026901198111  23",
+    "year": "2026",
+    "term": "9",
+    "description": "Quantitative Information",
+    "lastUpdated": 1468423785000,
+    "course": "111",
+    "subject": "198",
+    "offeringUnitCode": "01",
+    "offeringUnitCampus": "NB",
+    "code": "QQ",
+    "unit": "01",
+    "effective": "20269",
+    "coreCodeReferenceId": "23",
+    "coreCode": "QQ",
+    "coreCodeDescription": "Quantitative Information",
+    "supplement": "  "
+   },
+   {
+    "id": "2026901198111  24",
+    "year": "2026",
+    "term": "9",
+    "description": "Mathematical or Formal Reasoning",
+    "lastUpdated": 1468423795000,
+    "course": "111",
+    "subject": "198",
+    "offeringUnitCode": "01",
+    "offeringUnitCampus": "NB",
+    "code": "QR",
+    "unit": "01",
+    "effective": "20269",
+    "coreCodeReferenceId": "24",
+    "coreCode": "QR",
+    "coreCodeDescription": "Mathematical or Formal Reasoning",
+    "supplement": "  "
+   }
+  ],
+  "expandedTitle": "",
+  "courseFeeDescr": "",
+  "mainCampus": "NB",
+  "subjectNotes": "For Computer Science Special Permission Numbers to enter a closed course Do Not email instructors.  Please apply at https://www.cs.rutgers.edu/academics/undergraduate/course-registration-and-special-permission",
+  "courseNumber": "111",
+  "creditsObject": {
+   "code": "4_0",
+   "description": "4.0 credits"
+  },
+  "level": "U",
+  "campusCode": "NB",
+  "subjectGroupNotes": "",
+  "offeringUnitCode": "01",
+  "offeringUnitTitle": null,
+  "courseDescription": "",
+  "sections": [
+   {
+    "sectionEligibility": "",
+    "sessionDatePrintIndicator": "N",
+    "examCode": "M",
+    "specialPermissionAddCode": null,
+    "crossListedSections": [],
+    "sectionNotes": "CREDIT NOT GIVEN FOR BOTH THIS COURSE AND 14-332:252  ",
+    "specialPermissionDropCode": null,
+    "crossListedSectionType": "0",
+    "instructors": [
+     {
+      "name": "CENTENO"
+     }
+    ],
+    "number": "01",
+    "finalExam": "12/16/2026 - 0400 - 0700 PM",
+    "majors": [],
+    "openToText": "",
+    "openStatusText": "CLOSED",
+    "sessionDates": null,
+    "specialPermissionDropCodeDescription": null,
+    "subtopic": "",
+    "openStatus": false,
+    "comments": [
+     {
+      "code": "37",
+      "description": "Common Hour Exam (CHE) schedule available at scheduling.rutgers.edu"
+     },
+     {
+      "code": "05",
+      "description": "Go to http://canvas.rutgers.edu"
+     }
+    ],
+    "instructorsText": "CENTENO",
+    "minors": [],
+    "examCodeText": "Computer Science",
+    "campusCode": "NB",
+    "sectionCampusLocations": [
+     {
+      "code": "2",
+      "description": "Busch"
+     },
+     {
+      "code": "3",
+      "description": "Livingston"
+     }
+    ],
+    "index": "11389",
+    "unitMajors": [],
+    "printed": "Y",
+    "specialPermissionAddCodeDescription": null,
+    "commentsText": "Common Hour Exam (CHE) schedule available at scheduling.rutgers.edu, Go to http://canvas.rutgers.edu",
+    "subtitle": "",
+    "crossListedSectionsText": "",
+    "sectionCourseType": "T",
+    "meetingTimes": [
+     {
+      "campusLocation": "3",
+      "roomNumber": "232",
+      "campusAbbrev": "LIV",
+      "campusName": "LIVINGSTON",
+      "startTimeMilitary": "1400",
+      "buildingCode": "TIL",
+      "meetingModeDesc": "LEC",
+      "endTimeMilitary": "1520",
+      "meetingModeCode": "02",
+      "baClassHours": "",
+      "pmCode": "P",
+      "meetingDay": "T",
+      "startTime": "0200",
+      "endTime": "0320"
+     },
+     {
+      "campusLocation": "3",
+      "roomNumber": "232",
+      "campusAbbrev": "LIV",
+      "campusName": "LIVINGSTON",
+      "startTimeMilitary": "1400",
+      "buildingCode": "TIL",
+      "meetingModeDesc": "LEC",
+      "endTimeMilitary": "1520",
+      "meetingModeCode": "02",
+      "baClassHours": "",
+      "pmCode": "P",
+      "meetingDay": "H",
+      "startTime": "0200",
+      "endTime": "0320"
+     },
+     {
+      "campusLocation": "2",
+      "roomNumber": "108",
+      "campusAbbrev": "BUS",
+      "campusName": "BUSCH",
+      "startTimeMilitary": "0845",
+      "buildingCode": "ARC",
+      "meetingModeDesc": "RECIT",
+      "endTimeMilitary": "0940",
+      "meetingModeCode": "03",
+      "baClassHours": "",
+      "pmCode": "A",
+      "meetingDay": "H",
+      "startTime": "0845",
+      "endTime": "0940"
+     }
+    ],
+    "legendKey": null,
+    "honorPrograms": []
+   },
+   {
+    "sectionEligibility": "",
+    "sessionDatePrintIndicator": "N",
+    "examCode": "M",
+    "specialPermissionAddCode": null,
+    "crossListedSections": [],
+    "sectionNotes": "",
+    "specialPermissionDropCode": null,
+    "crossListedSectionType": "0",
+    "instructors": [
+     {
+      "name": "CENTENO"
+     }
+    ],
+    "number": "02",
+    "finalExam": "12/16/2026 - 0400 - 0700 PM",
+    "majors": [],
+    "openToText": "",
+    "openStatusText": "CLOSED",
+    "sessionDates": null,
+    "specialPermissionDropCodeDescription": null,
+    "subtopic": "",
+    "openStatus": false,
+    "comments": [
+     {
+      "code": "05",
+      "description": "Go to http://canvas.rutgers.edu"
+     }
+    ],
+    "instructorsText": "CENTENO",
+    "minors": [],
+    "examCodeText": "Computer Science",
+    "campusCode": "NB",
+    "sectionCampusLocations": [
+     {
+      "code": "2",
+      "description": "Busch"
+     },
+     {
+      "code": "3",
+      "description": "Livingston"
+     }
+    ],
+    "index": "11390",
+    "unitMajors": [],
+    "printed": "Y",
+    "specialPermissionAddCodeDescription": null,
+    "commentsText": "Go to http://canvas.rutgers.edu",
+    "subtitle": "",
+    "crossListedSectionsText": "",
+    "sectionCourseType": "T",
+    "meetingTimes": [
+     {
+      "campusLocation": "3",
+      "roomNumber": "232",
+      "campusAbbrev": "LIV",
+      "campusName": "LIVINGSTON",
+      "startTimeMilitary": "1400",
+      "buildingCode": "TIL",
+      "meetingModeDesc": "LEC",
+      "endTimeMilitary": "1520",
+      "meetingModeCode": "02",
+      "baClassHours": "",
+      "pmCode": "P",
+      "meetingDay": "T",
+      "startTime": "0200",
+      "endTime": "0320"
+     },
+     {
+      "campusLocation": "3",
+      "roomNumber": "232",
+      "campusAbbrev": "LIV",
+      "campusName": "LIVINGSTON",
+      "startTimeMilitary": "1400",
+      "buildingCode": "TIL",
+      "meetingModeDesc": "LEC",
+      "endTimeMilitary": "1520",
+      "meetingModeCode": "02",
+      "baClassHours": "",
+      "pmCode": "P",
+      "meetingDay": "H",
+      "startTime": "0200",
+      "endTime": "0320"
+     },
+     {
+      "campusLocation": "2",
+      "roomNumber": "217",
+      "campusAbbrev": "BUS",
+      "campusName": "BUSCH",
+      "startTimeMilitary": "0845",
+      "buildingCode": "SEC",
+      "meetingModeDesc": "RECIT",
+      "endTimeMilitary": "0940",
+      "meetingModeCode": "03",
+      "baClassHours": "",
+      "pmCode": "A",
+      "meetingDay": "H",
+      "startTime": "0845",
+      "endTime": "0940"
+     }
+    ],
+    "legendKey": null,
+    "honorPrograms": []
+   }
+  ],
+  "supplementCode": "  ",
+  "courseFee": "0",
+  "unitNotes": "",
+  "courseNotes": "A grade below a 'C' in a prerequisite course will not satisfy prereq"
+ },
+ {
+  "campusLocations": [
+   {
+    "code": "2",
+    "description": "Busch"
+   },
+   {
+    "code": "3",
+    "description": "Livingston"
+   }
+  ],
+  "subject": "198",
+  "openSections": 0,
+  "synopsisUrl": "http://www.cs.rutgers.edu/undergraduate/courses/",
+  "title": "DATA STRUCTURES",
+  "preReqNotes": "(01:198:111 INTRO COMPUTER SCI )",
+  "courseString": "01:198:112",
+  "school": {
+   "code": "01",
+   "description": "School of Arts and Sciences"
+  },
+  "credits": 4,
+  "subjectDescription": "Computer Science",
+  "coreCodes": [],
+  "expandedTitle": "",
+  "courseFeeDescr": "",
+  "mainCampus": "NB",
+  "subjectNotes": "For Computer Science Special Permission Numbers to enter a closed course Do Not email instructors.  Please apply at https://www.cs.rutgers.edu/academics/undergraduate/course-registration-and-special-permission",
+  "courseNumber": "112",
+  "creditsObject": {
+   "code": "4_0",
+   "description": "4.0 credits"
+  },
+  "level": "U",
+  "campusCode": "NB",
+  "subjectGroupNotes": "",
+  "offeringUnitCode": "01",
+  "offeringUnitTitle": null,
+  "courseDescription": "",
+  "sections": [
+   {
+    "sectionEligibility": "1ST YEAR ONLY",
+    "sessionDatePrintIndicator": "N",
+    "examCode": "M",
+    "specialPermissionAddCode": null,
+    "crossListedSections": [],
+    "sectionNotes": "",
+    "specialPermissionDropCode": null,
+    "crossListedSectionType": "0",
+    "instructors": [
+     {
+      "name": "CENTENO"
+     }
+    ],
+    "number": "01",
+    "finalExam": "12/16/2026 - 0400 - 0700 PM",
+    "majors": [],
+    "openToText": "",
+    "openStatusText": "CLOSED",
+    "sessionDates": null,
+    "specialPermissionDropCodeDescription": null,
+    "subtopic": "",
+    "openStatus": false,
+    "comments": [
+     {
+      "code": "05",
+      "description": "Go to http://canvas.rutgers.edu"
+     },
+     {
+      "code": "37",
+      "description": "Common Hour Exam (CHE) schedule available at scheduling.rutgers.edu"
+     }
+    ],
+    "instructorsText": "CENTENO",
+    "minors": [],
+    "examCodeText": "Computer Science",
+    "campusCode": "NB",
+    "sectionCampusLocations": [
+     {
+      "code": "3",
+      "description": "Livingston"
+     }
+    ],
+    "index": "11425",
+    "unitMajors": [],
+    "printed": "Y",
+    "specialPermissionAddCodeDescription": null,
+    "commentsText": "Go to http://canvas.rutgers.edu, Common Hour Exam (CHE) schedule available at scheduling.rutgers.edu",
+    "subtitle": "",
+    "crossListedSectionsText": "",
+    "sectionCourseType": "T",
+    "meetingTimes": [
+     {
+      "campusLocation": "3",
+      "roomNumber": "254",
+      "campusAbbrev": "LIV",
+      "campusName": "LIVINGSTON",
+      "startTimeMilitary": "1550",
+      "buildingCode": "TIL",
+      "meetingModeDesc": "LEC",
+      "endTimeMilitary": "1710",
+      "meetingModeCode": "02",
+      "baClassHours": "",
+      "pmCode": "P",
+      "meetingDay": "T",
+      "startTime": "0350",
+      "endTime": "0510"
+     },
+     {
+      "campusLocation": "3",
+      "roomNumber": "254",
+      "campusAbbrev": "LIV",
+      "campusName": "LIVINGSTON",
+      "startTimeMilitary": "1550",
+      "buildingCode": "TIL",
+      "meetingModeDesc": "LEC",
+      "endTimeMilitary": "1710",
+      "meetingModeCode": "02",
+      "baClassHours": "",
+      "pmCode": "P",
+      "meetingDay": "H",
+      "startTime": "0350",
+      "endTime": "0510"
+     },
+     {
+      "campusLocation": "3",
+      "roomNumber": "B121",
+      "campusAbbrev": "LIV",
+      "campusName": "LIVINGSTON",
+      "startTimeMilitary": "1415",
+      "buildingCode": "LSH",
+      "meetingModeDesc": "RECIT",
+      "endTimeMilitary": "1510",
+      "meetingModeCode": "03",
+      "baClassHours": "",
+      "pmCode": "P",
+      "meetingDay": "F",
+      "startTime": "0215",
+      "endTime": "0310"
+     }
+    ],
+    "legendKey": null,
+    "honorPrograms": []
+   },
+   {
+    "sectionEligibility": "",
+    "sessionDatePrintIndicator": "N",
+    "examCode": "M",
+    "specialPermissionAddCode": null,
+    "crossListedSections": [],
+    "sectionNotes": "",
+    "specialPermissionDropCode": null,
+    "crossListedSectionType": "0",
+    "instructors": [
+     {
+      "name": "CENTENO"
+     }
+    ],
+    "number": "02",
+    "finalExam": "12/16/2026 - 0400 - 0700 PM",
+    "majors": [],
+    "openToText": "",
+    "openStatusText": "CLOSED",
+    "sessionDates": null,
+    "specialPermissionDropCodeDescription": null,
+    "subtopic": "",
+    "openStatus": false,
+    "comments": [
+     {
+      "code": "37",
+      "description": "Common Hour Exam (CHE) schedule available at scheduling.rutgers.edu"
+     },
+     {
+      "code": "05",
+      "description": "Go to http://canvas.rutgers.edu"
+     }
+    ],
+    "instructorsText": "CENTENO",
+    "minors": [],
+    "examCodeText": "Computer Science",
+    "campusCode": "NB",
+    "sectionCampusLocations": [
+     {
+      "code": "3",
+      "description": "Livingston"
+     }
+    ],
+    "index": "11426",
+    "unitMajors": [],
+    "printed": "Y",
+    "specialPermissionAddCodeDescription": null,
+    "commentsText": "Common Hour Exam (CHE) schedule available at scheduling.rutgers.edu, Go to http://canvas.rutgers.edu",
+    "subtitle": "",
+    "crossListedSectionsText": "",
+    "sectionCourseType": "T",
+    "meetingTimes": [
+     {
+      "campusLocation": "3",
+      "roomNumber": "254",
+      "campusAbbrev": "LIV",
+      "campusName": "LIVINGSTON",
+      "startTimeMilitary": "1550",
+      "buildingCode": "TIL",
+      "meetingModeDesc": "LEC",
+      "endTimeMilitary": "1710",
+      "meetingModeCode": "02",
+      "baClassHours": "",
+      "pmCode": "P",
+      "meetingDay": "T",
+      "startTime": "0350",
+      "endTime": "0510"
+     },
+     {
+      "campusLocation": "3",
+      "roomNumber": "254",
+      "campusAbbrev": "LIV",
+      "campusName": "LIVINGSTON",
+      "startTimeMilitary": "1550",
+      "buildingCode": "TIL",
+      "meetingModeDesc": "LEC",
+      "endTimeMilitary": "1710",
+      "meetingModeCode": "02",
+      "baClassHours": "",
+      "pmCode": "P",
+      "meetingDay": "H",
+      "startTime": "0350",
+      "endTime": "0510"
+     },
+     {
+      "campusLocation": "3",
+      "roomNumber": "125",
+      "campusAbbrev": "LIV",
+      "campusName": "LIVINGSTON",
+      "startTimeMilitary": "1415",
+      "buildingCode": "TIL",
+      "meetingModeDesc": "RECIT",
+      "endTimeMilitary": "1510",
+      "meetingModeCode": "03",
+      "baClassHours": "",
+      "pmCode": "P",
+      "meetingDay": "F",
+      "startTime": "0215",
+      "endTime": "0310"
+     }
+    ],
+    "legendKey": null,
+    "honorPrograms": []
+   }
+  ],
+  "supplementCode": "  ",
+  "courseFee": "0",
+  "unitNotes": "",
+  "courseNotes": "A grade below a 'C' in a prerequisite course will not satisfy prereq"
+ }
+]

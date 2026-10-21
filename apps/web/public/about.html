@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f3ede6" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1e1a17" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="A student planner for classes and tasks">
+  <title>Honorum</title>
+  <link rel="preload" href="/fonts/poppins-500.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script src="/landing.js"></script>
+  <!-- Laid out like a GNOME app page: icon, name, summary, one action, a
+       preview, then the features in a row; it fits one screen. Tokens match app.css. -->
+  <style>
+    @font-face { font-family: Poppins; font-weight: 500; font-display: swap; src: url(/fonts/poppins-500.woff2) format('woff2'); }
+    :root {
+      color-scheme: light;
+      --display: Poppins, system-ui, sans-serif;
+      --accent: #8a5c3c; --accent-fg: #7a5033; --on-accent: #fff;
+      --bg: #f3ede6; --view: #fffdfa; --card: #fff;
+      --text: #2a221d; --text2: #5f544b; --muted: #8f8378;
+      --line: #e4dbd0; --tint: #f0e3d6; --today: #fbf5ee;
+      --now: #d9402f; --event-ink: #241d18; --event-ink2: #514740; --track: #cfc4b8;
+      --ring-day: #d57a7e; --ring-week: #f8b585; --ring-term: #70b1ea; --ring-mix: 20%; --flame: #e8492b;
+      --shadow: 0 1px 2px rgba(40, 25, 10, .06), 0 6px 20px rgba(40, 25, 10, .12);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+        --accent: #c99f7c; --accent-fg: #ddb996; --on-accent: #231810;
+        --bg: #1e1a17; --view: #262220; --card: #2e2926;
+        --text: #ece5de; --text2: #bfb4a9; --muted: #948a80;
+        --line: #3b3430; --tint: #3d3128; --today: #2c2623;
+        --now: #ff7a68; --event-ink: #1c1614; --event-ink2: #3f3530; --track: #4c443e;
+        --ring-day: #ff7a68; --ring-week: #f0b35a; --ring-term: #8fb0d0; --ring-mix: 24%; --flame: #ff6f52;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .5);
+      }
+      .ev, .chip { filter: brightness(.82) saturate(1.1); }
+    }
+    * { box-sizing: border-box; }
+    body { display: flex; flex-direction: column; justify-content: center; min-height: 100svh; margin: 0; padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Adwaita Sans", Inter, sans-serif; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; }
+    h1, h2, p, ul { margin: 0; }
+    ul { padding: 0; list-style: none; }
+    [hidden] { display: none !important; }
+    a { color: var(--accent-fg); }
+    :focus-visible { outline: 2px solid var(--accent-fg); outline-offset: 2px; }
+    .i { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+    main { width: min(100% - 32px, 44rem); margin: 0 auto; padding: 32px 0 8px; }
+
+    .hero { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .hero img { width: 80px; height: 80px; border-radius: 18px; box-shadow: var(--shadow); }
+    h1 { margin-top: 12px; font: 500 2.1rem/1.15 var(--display); letter-spacing: -.02em; }
+    .hero p { margin-top: 6px; font-size: 1.1rem; color: var(--text2); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; margin-top: 16px; padding: 0 24px; border-radius: 999px; background: var(--accent); color: var(--on-accent); font-weight: 600; text-decoration: none; }
+    @media (hover: hover) { .btn:hover { filter: brightness(1.08); } }
+    .btn:active { filter: brightness(.95); }
+
+    /* A week in the planner, drawn rather than captured, so it follows the theme. */
+    .preview { margin: 28px 0 0; border-radius: 12px; background: var(--view); box-shadow: 0 0 0 1px var(--line), var(--shadow); overflow: hidden; }
+    .titlebar { display: flex; align-items: center; justify-content: center; height: 34px; background: var(--bg); box-shadow: inset 0 -1px var(--line); font: 500 .9rem var(--display); }
+    .week { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0 4px; padding: 0 8px 8px; }
+    .day { padding: 6px 0; font-size: .72rem; font-weight: 600; color: var(--muted); text-align: center; }
+    .day.today { color: var(--accent-fg); }
+    .col { position: relative; height: 196px; background: repeating-linear-gradient(transparent 0 29px, var(--line) 29px 30px); }
+    .col.today { background-color: var(--today); }
+    .ev { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; gap: 1px; padding: 3px 6px; border-radius: 6px; background: var(--c); color: var(--event-ink); font-size: .74rem; line-height: 1.3; overflow: hidden; }
+    .ev b, .ev span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ev span { color: var(--event-ink2); font-size: .68rem; }
+    .now { position: absolute; left: -2px; right: 0; height: 2px; background: var(--now); }
+    .now::before { content: ''; position: absolute; left: -3px; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: inherit; }
+
+    /* The Tasks list and the Progress card beside it. */
+    .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+    .card { padding: 14px 16px 16px; border-radius: 12px; background: var(--card); box-shadow: 0 0 0 1px var(--line); }
+    .card h2 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font: 500 .95rem var(--display); }
+    .task { display: flex; align-items: center; gap: 10px; min-height: 32px; font-size: .9rem; }
+    .task + .task { border-top: 1px solid var(--line); }
+    .tt { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .task small { color: var(--muted); font-size: .78rem; }
+    .done .tt { color: var(--muted); text-decoration: line-through; }
+    .tick { flex: none; width: 18px; height: 18px; border: 2px solid var(--track); border-radius: 50%; }
+    .done .tick { border-color: var(--accent); background: var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 12.5 4 4 8-9'/%3E%3C/svg%3E") center / 12px no-repeat; }
+    .chip { flex: none; padding: 0 6px; border-radius: 4px; background: var(--c); color: var(--event-ink); font-size: .7rem; font-weight: 600; line-height: 18px; }
+    .streak { display: flex; align-items: center; gap: 3px; color: var(--flame); font: 600 .85rem system-ui, sans-serif; }
+    .streak .i { width: 16px; height: 16px; fill: currentColor; stroke: none; }
+    .rings { display: flex; align-items: center; gap: 16px; }
+    .rings svg { flex: none; width: 88px; height: 88px; transform: rotate(-90deg); }
+    .rings circle { fill: none; stroke-width: 10; }
+    .rings .track { stroke: color-mix(in srgb, var(--c) var(--ring-mix), var(--card)); }
+    .rings .arc { stroke: var(--c); stroke-linecap: round; }
+    .rings ul { display: grid; gap: 6px; font-size: .85rem; }
+    .rings li { display: flex; align-items: center; gap: 8px; }
+    .rings li::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+    .rings b { min-width: 2.6em; font: 500 1rem var(--display); }
+
+    .features { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-top: 24px; }
+    .features li { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 4px; text-align: center; font-size: .85rem; font-weight: 600; }
+    .fi { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--tint); color: var(--accent-fg); }
+    .fi .i { width: 20px; height: 20px; }
+
+
+    footer { display: flex; justify-content: center; gap: 24px; padding: 20px 16px 24px; font-size: .88rem; }
+    footer a { color: var(--muted); text-decoration: none; }
+    @media (hover: hover) { footer a:hover { color: var(--text); text-decoration: underline; } }
+
+    @media (max-width: 34rem) {
+      main { padding-top: 24px; }
+      h1 { font-size: 2rem; }
+      .ev span { display: none; }
+      .cards { grid-template-columns: 1fr; }
+      .features { grid-template-columns: repeat(3, 1fr); row-gap: 12px; }
+    }
+    /* The page settles in from the top, and the rings sweep to their values. */
+    @media (prefers-reduced-motion: no-preference) {
+      .rise { animation: rise .7s cubic-bezier(.2, .7, .2, 1) backwards; animation-delay: calc(var(--i, 0) * 90ms); }
+      .rings .arc { animation: sweep 1.3s cubic-bezier(.3, .85, .35, 1) .6s backwards; }
+      @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+      @keyframes sweep { from { stroke-dasharray: 0 100; } }
+    }
+  </style>
+</head>
+<body>
+  <svg hidden aria-hidden="true">
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+    <symbol id="i-tasks" viewBox="0 0 24 24"><path d="m4 7 1.8 1.8L9 5.5M4 13l1.8 1.8L9 11.5M4 19l1.8 1.8L9 17.5M12 7h8M12 13h8M12 19h8"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6.5 16.5V11a5.5 5.5 0 0 1 11 0v5.5l1.5 2h-14zM10 20.5a2 2 0 0 0 4 0"/></symbol>
+    <symbol id="i-week" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 4.5h12.5a1.5 1.5 0 0 1 1.5 1.5v13.5H6.5A1.5 1.5 0 0 0 5 21z"/><path d="M5 18.5a1.5 1.5 0 0 1 1.5-1.5H19M9 8.5h6"/></symbol>
+    <symbol id="i-sync" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 1-14 5.3M4 12a8 8 0 0 1 14-5.3M18 3v4h-4M6 21v-4h4"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 21a6.5 6.5 0 0 0 6.5-6.5c0-4.3-3.3-6.6-4.4-10.8-2.2 2.1-3.3 4.4-3.3 6.5-1.1-1.1-1.6-2.2-1.6-3.3C7 9.6 5.5 12.3 5.5 14.5A6.5 6.5 0 0 0 12 21z"/></symbol>
+  </svg>
+  <main>
+    <section class="hero rise">
+      <img src="/icon.svg" alt="">
+      <h1>Honorum</h1>
+      <p>A student planner for classes and tasks</p>
+      <a class="btn" href="/app">Open Honorum</a>
+    </section>
+
+    <figure class="preview rise" style="--i:2" aria-hidden="true">
+      <div class="titlebar">Week</div>
+      <div class="week">
+        <div class="day">Mon</div><div class="day">Tue</div><div class="day today">Wed</div><div class="day">Thu</div><div class="day">Fri</div>
+        <div class="col">
+          <div class="ev" style="--c:#cfe6fb; top:2px; height:36px"><b>CS 101</b><span>9:00 AM</span></div>
+          <div class="ev" style="--c:#d3f0da; top:92px; height:36px"><b>BIO 150</b><span>12:00 PM</span></div>
+        </div>
+        <div class="col">
+          <div class="ev" style="--c:#fde6c3; top:47px; height:36px"><b>MATH 221</b><span>10:30 AM</span></div>
+          <div class="ev" style="--c:#e5d9fb; top:152px; height:36px"><b>HIST 110</b><span>2:00 PM</span></div>
+        </div>
+        <div class="col today">
+          <div class="ev" style="--c:#cfe6fb; top:2px; height:36px"><b>CS 101</b><span>9:00 AM</span></div>
+          <div class="ev" style="--c:#d3f0da; top:92px; height:36px"><b>BIO 150</b><span>12:00 PM</span></div>
+          <div class="now" style="top:68px"></div>
+        </div>
+        <div class="col">
+          <div class="ev" style="--c:#fde6c3; top:47px; height:36px"><b>MATH 221</b><span>10:30 AM</span></div>
+          <div class="ev" style="--c:#e5d9fb; top:152px; height:36px"><b>HIST 110</b><span>2:00 PM</span></div>
+        </div>
+        <div class="col">
+          <div class="ev" style="--c:#cfe6fb; top:2px; height:36px"><b>CS 101</b><span>9:00 AM</span></div>
+          <div class="ev" style="--c:#d3f0da; top:122px; height:36px"><b>Lab Report</b><span>Due 1:00 PM</span></div>
+        </div>
+      </div>
+    </figure>
+
+    <div class="cards rise" style="--i:3" aria-hidden="true">
+      <div class="card">
+        <h2>Tasks</h2>
+        <div class="task done"><span class="tick"></span><span class="tt">Problem Set 4</span><span class="chip" style="--c:#fde6c3">MATH 221</span></div>
+        <div class="task"><span class="tick"></span><span class="tt">Lab Report <small>Fri</small></span><span class="chip" style="--c:#d3f0da">BIO 150</span></div>
+        <div class="task"><span class="tick"></span><span class="tt">Reading Response <small>Mon</small></span><span class="chip" style="--c:#e5d9fb">HIST 110</span></div>
+      </div>
+      <div class="card">
+        <h2>Progress <span class="streak"><svg class="i"><use href="#i-flame"/></svg>12</span></h2>
+        <div class="rings">
+          <svg viewBox="0 0 104 104">
+            <circle class="track" style="--c:var(--ring-day)" cx="52" cy="52" r="47"/><circle class="arc" style="--c:var(--ring-day)" cx="52" cy="52" r="47" pathLength="100" stroke-dasharray="75 100"/>
+            <circle class="track" style="--c:var(--ring-week)" cx="52" cy="52" r="34"/><circle class="arc" style="--c:var(--ring-week)" cx="52" cy="52" r="34" pathLength="100" stroke-dasharray="60 100"/>
+            <circle class="track" style="--c:var(--ring-term)" cx="52" cy="52" r="21"/><circle class="arc" style="--c:var(--ring-term)" cx="52" cy="52" r="21" pathLength="100" stroke-dasharray="40 100"/>
+          </svg>
+          <ul>
+            <li style="--c:var(--ring-day)"><b>75%</b>Today</li>
+            <li style="--c:var(--ring-week)"><b>60%</b>Week</li>
+            <li style="--c:var(--ring-term)"><b>40%</b>Term</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <ul class="features">
+      <li><span class="fi"><svg class="i"><use href="#i-search"/></svg></span>Find Classes</li>
+      <li><span class="fi"><svg class="i"><use href="#i-week"/></svg></span>Build Schedules</li>
+      <li><span class="fi"><svg class="i"><use href="#i-tasks"/></svg></span>Track Tasks</li>
+      <li><span class="fi"><svg class="i"><use href="#i-bell"/></svg></span>Seat Alerts</li>
+      <li><span class="fi"><svg class="i"><use href="#i-book"/></svg></span>Canvas Import</li>
+      <li><span class="fi"><svg class="i"><use href="#i-sync"/></svg></span>Works Offline</li>
+    </ul>
+
+  </main>
+  <footer>
+    <a href="/legal.html">Privacy and Terms</a>
+    <a href="mailto:support@honorum.app">Support</a>
+  </footer>
+</body>
+</html>

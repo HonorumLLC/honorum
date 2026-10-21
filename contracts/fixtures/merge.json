@@ -1,0 +1,374 @@
+{
+  "cases": [
+    {
+      "name": "independent fields both survive",
+      "base": {
+        "name": "Fall",
+        "primary": false,
+        "sections": [
+          "a"
+        ]
+      },
+      "local": {
+        "name": "Fall 2026",
+        "primary": false,
+        "sections": [
+          "a"
+        ]
+      },
+      "remote": {
+        "name": "Fall",
+        "primary": true,
+        "sections": [
+          "a"
+        ]
+      },
+      "body": {
+        "name": "Fall 2026",
+        "primary": true,
+        "sections": [
+          "a"
+        ]
+      },
+      "conflicted": false
+    },
+    {
+      "name": "string lists merge as sets",
+      "base": {
+        "sections": [
+          "a",
+          "b"
+        ]
+      },
+      "local": {
+        "sections": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      "remote": {
+        "sections": [
+          "b",
+          "d"
+        ]
+      },
+      "body": {
+        "sections": [
+          "b",
+          "c",
+          "d"
+        ]
+      },
+      "conflicted": false
+    },
+    {
+      "name": "same field edited on both sides keeps local and conflicts",
+      "base": {
+        "name": "Fall"
+      },
+      "local": {
+        "name": "Mine"
+      },
+      "remote": {
+        "name": "Theirs"
+      },
+      "body": {
+        "name": "Mine"
+      },
+      "conflicted": true
+    },
+    {
+      "name": "nested objects merge by key",
+      "base": {
+        "colors": {
+          "a": "red"
+        },
+        "pinned": {}
+      },
+      "local": {
+        "colors": {
+          "a": "red",
+          "b": "blue"
+        },
+        "pinned": {}
+      },
+      "remote": {
+        "colors": {
+          "a": "green"
+        },
+        "pinned": {
+          "x": {
+            "id": "x"
+          }
+        }
+      },
+      "body": {
+        "colors": {
+          "a": "green",
+          "b": "blue"
+        },
+        "pinned": {
+          "x": {
+            "id": "x"
+          }
+        }
+      },
+      "conflicted": false
+    },
+    {
+      "name": "a key removed locally stays removed when remote left it alone",
+      "base": {
+        "note": "old",
+        "done": false
+      },
+      "local": {
+        "done": false
+      },
+      "remote": {
+        "note": "old",
+        "done": true
+      },
+      "body": {
+        "done": true
+      },
+      "conflicted": false
+    },
+    {
+      "name": "identical edits are not a conflict",
+      "base": {
+        "title": "A"
+      },
+      "local": {
+        "title": "B"
+      },
+      "remote": {
+        "title": "B"
+      },
+      "body": {
+        "title": "B"
+      },
+      "conflicted": false
+    },
+    {
+      "name": "events added on both sides both survive",
+      "base": {
+        "blocks": [
+          {
+            "id": "a",
+            "name": "Work",
+            "days": "T",
+            "start": 780,
+            "end": 840
+          }
+        ]
+      },
+      "local": {
+        "blocks": [
+          {
+            "id": "a",
+            "name": "Work",
+            "days": "T",
+            "start": 780,
+            "end": 840
+          },
+          {
+            "id": "b",
+            "name": "Gym",
+            "days": "T",
+            "start": 1020,
+            "end": 1080
+          }
+        ]
+      },
+      "remote": {
+        "blocks": [
+          {
+            "id": "a",
+            "name": "Work",
+            "days": "T",
+            "start": 780,
+            "end": 840
+          },
+          {
+            "id": "c",
+            "name": "Club",
+            "days": "T",
+            "start": 1140,
+            "end": 1200
+          }
+        ]
+      },
+      "body": {
+        "blocks": [
+          {
+            "id": "a",
+            "name": "Work",
+            "days": "T",
+            "start": 780,
+            "end": 840
+          },
+          {
+            "id": "b",
+            "name": "Gym",
+            "days": "T",
+            "start": 1020,
+            "end": 1080
+          },
+          {
+            "id": "c",
+            "name": "Club",
+            "days": "T",
+            "start": 1140,
+            "end": 1200
+          }
+        ]
+      },
+      "conflicted": false
+    },
+    {
+      "name": "different fields of one event both survive",
+      "base": {
+        "blocks": [
+          {
+            "id": "a",
+            "name": "Work",
+            "days": "T",
+            "start": 780,
+            "end": 840
+          }
+        ]
+      },
+      "local": {
+        "blocks": [
+          {
+            "id": "a",
+            "name": "Shift",
+            "days": "T",
+            "start": 780,
+            "end": 840
+          }
+        ]
+      },
+      "remote": {
+        "blocks": [
+          {
+            "id": "a",
+            "name": "Work",
+            "days": "T",
+            "start": 780,
+            "end": 840,
+            "location": "Library"
+          }
+        ]
+      },
+      "body": {
+        "blocks": [
+          {
+            "id": "a",
+            "name": "Shift",
+            "days": "T",
+            "start": 780,
+            "end": 840,
+            "location": "Library"
+          }
+        ]
+      },
+      "conflicted": false
+    },
+    {
+      "name": "an event removed on one side stays removed when the other left it alone",
+      "base": {
+        "blocks": [
+          {
+            "id": "a",
+            "name": "Work",
+            "days": "T",
+            "start": 780,
+            "end": 840
+          },
+          {
+            "id": "b",
+            "name": "Gym",
+            "days": "T",
+            "start": 1020,
+            "end": 1080
+          }
+        ]
+      },
+      "local": {
+        "blocks": [
+          {
+            "id": "b",
+            "name": "Gym",
+            "days": "T",
+            "start": 1020,
+            "end": 1080
+          }
+        ]
+      },
+      "remote": {
+        "blocks": [
+          {
+            "id": "a",
+            "name": "Work",
+            "days": "T",
+            "start": 780,
+            "end": 840
+          },
+          {
+            "id": "b",
+            "name": "Gym",
+            "days": "T",
+            "start": 1080,
+            "end": 1140
+          }
+        ]
+      },
+      "body": {
+        "blocks": [
+          {
+            "id": "b",
+            "name": "Gym",
+            "days": "T",
+            "start": 1080,
+            "end": 1140
+          }
+        ]
+      },
+      "conflicted": false
+    },
+    {
+      "name": "an event edited on one side and removed on the other keeps the local side and conflicts",
+      "base": {
+        "blocks": [
+          {
+            "id": "a",
+            "name": "Work",
+            "days": "T",
+            "start": 780,
+            "end": 840
+          }
+        ]
+      },
+      "local": {
+        "blocks": []
+      },
+      "remote": {
+        "blocks": [
+          {
+            "id": "a",
+            "name": "Shift",
+            "days": "T",
+            "start": 780,
+            "end": 840
+          }
+        ]
+      },
+      "body": {
+        "blocks": []
+      },
+      "conflicted": true
+    }
+  ]
+}

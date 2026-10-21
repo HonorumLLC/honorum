@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "honorum",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-01",
+  "workers_dev": true,
+  "build": { "command": "npm --prefix ../../apps/web ci && npm --prefix ../../apps/web run build" },
+  "assets": { "directory": "../../apps/web/dist", "binding": "ASSETS", "run_worker_first": true },
+  "preview_urls": false,
+  "observability": { "enabled": true },
+  // Keep the applied Durable Object migration history for Wrangler deployments.
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["ClassRadar"] },
+    { "tag": "v2", "deleted_classes": ["ClassRadar"] }
+  ],
+  "r2_buckets": [{ "binding": "CATALOG", "bucket_name": "classradar-db" }],
+  "vpc_services": [
+    { "binding": "DIGITALOCEAN_API", "service_id": "01a10e36-e5f6-7962-9429-0107e552b3d5" },
+    { "binding": "DIGITALOCEAN_WORKER", "service_id": "01a10e37-604d-7a32-8941-f4ccbe459b24" }
+  ],
+  "triggers": { "crons": [] },
+  "vars": {
+    // The release workflow stamps the edge commit here.
+    "VERSION": "dev",
+    "MAINTENANCE": "0"
+  }
+}

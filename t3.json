@@ -1,0 +1,14 @@
+{
+  "$schema": "https://t3.codes/schema/t3.json",
+  "defaultThreadEnvMode": "worktree",
+  "scripts": [
+    {
+      "name": "Setup worktree",
+      "command": "make setup && make build",
+      "icon": "configure",
+      "runOnWorktreeCreate": true
+    },
+    { "name": "Check", "command": "make check", "icon": "test" },
+    { "name": "Demo", "command": "make demo", "icon": "play" }
+  ]
+}

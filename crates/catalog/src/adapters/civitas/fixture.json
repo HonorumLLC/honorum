@@ -1,0 +1,177 @@
+{
+ "terms": {
+  "data": {
+   "environment": {
+    "id": "RW52aXJvbm1lbnQ6aXZ5dGVjaA==",
+    "courseSearchTerms": [
+     {
+      "code": "202620",
+      "name": "Fall 2026",
+      "id": "U2VhcmNoVGVybTppdnl0ZWNoOjIwMjYyMA=="
+     },
+     {
+      "code": "202630",
+      "name": "Spring 2027",
+      "id": "U2VhcmNoVGVybTppdnl0ZWNoOjIwMjYzMA=="
+     }
+    ]
+   }
+  }
+ },
+ "courses": {
+  "data": {
+   "environment": {
+    "findCourses": {
+     "totalSections": 3,
+     "pageInfo": {
+      "hasNextPage": false,
+      "endCursor": "x"
+     },
+     "edges": [
+      {
+       "node": {
+        "id": "U2VhcmNoQ291cnNlOml2eXRlY2g6TWpBeU5qSXdPa0ZEUTFRNk1UQXg=",
+        "subject": {
+         "id": "ACCT"
+        },
+        "courseNumber": "101",
+        "title": "Financial Accounting",
+        "creditsMin": 3,
+        "creditsMax": 3
+       }
+      },
+      {
+       "node": {
+        "id": "U2VhcmNoQ291cnNlOml2eXRlY2g6TWpBeU5qSXdPa0ZEUTFRNk1UQXk=",
+        "subject": {
+         "id": "ACCT"
+        },
+        "courseNumber": "102",
+        "title": "Managerial Accounting",
+        "creditsMin": 3,
+        "creditsMax": 3
+       }
+      }
+     ]
+    }
+   }
+  }
+ },
+ "sections": {
+  "data": {
+   "environment": {
+    "getCourseSections": {
+     "totalSections": 75,
+     "pageInfo": {
+      "hasNextPage": false,
+      "endCursor": "Mg=="
+     },
+     "edges": [
+      {
+       "node": {
+        "id": "U2VhcmNoU2VjdGlvbjppdnl0ZWNoOk1qQXlOakl3T2tGRFExUTZNVEF4T2pJeE16azE=",
+        "registrationNumber": "21395",
+        "sectionNumber": "00A",
+        "startDate": null,
+        "endDate": null,
+        "instructors": [
+         "Pirtle, Gina A"
+        ],
+        "instructionMode": "Virtual Instruction",
+        "partsOfTerm": "Fall 2026 - 1st 8 Weeks",
+        "courseTypeDescription": "Evening",
+        "creditsMin": 3,
+        "creditsMax": 3,
+        "openSeats": 12,
+        "totalSeats": 30,
+        "campus": "Lake County(Gary/E Chic/Crown)",
+        "location": "",
+        "component": "Lecture",
+        "meetings": [
+         {
+          "room": "VIRTUAL",
+          "building": "INTA6V",
+          "buildingCode": null,
+          "days": "M",
+          "startDate": "2026-08-24",
+          "endDate": "2026-10-12",
+          "startTime": 1800,
+          "endTime": 2045
+         }
+        ]
+       }
+      },
+      {
+       "node": {
+        "id": "U2VhcmNoU2VjdGlvbjppdnl0ZWNoOk1qQXlOakl3T2tGRFExUTZNVEF4T2pNeE1qRXo=",
+        "registrationNumber": "31213",
+        "sectionNumber": "00F",
+        "startDate": null,
+        "endDate": null,
+        "instructors": [
+         "Bowman, Rebecca Lee"
+        ],
+        "instructionMode": "Virtual Instruction",
+        "partsOfTerm": "Fall 2026 - 1st 8 Weeks",
+        "courseTypeDescription": "(other)",
+        "creditsMin": 3,
+        "creditsMax": 3,
+        "openSeats": 8,
+        "totalSeats": 28,
+        "campus": "Anderson",
+        "location": "",
+        "component": "Lecture",
+        "meetings": [
+         {
+          "room": "VIRTUAL",
+          "building": "AND60",
+          "buildingCode": null,
+          "days": "M",
+          "startDate": "2026-08-24",
+          "endDate": "2026-10-12",
+          "startTime": 1800,
+          "endTime": 2050
+         }
+        ]
+       }
+      },
+      {
+       "node": {
+        "id": "U2VhcmNoU2VjdGlvbjppdnl0ZWNoOk1qQXlOakl3T2tGRFExUTZNVEF4T2pJd016ZzU=",
+        "registrationNumber": "20389",
+        "sectionNumber": "01D",
+        "startDate": null,
+        "endDate": null,
+        "instructors": [
+         "Hartman, Pamela Rae"
+        ],
+        "instructionMode": "Learn Anywhere",
+        "partsOfTerm": "Fall 2026 - 1st 8 Weeks",
+        "courseTypeDescription": "(other)",
+        "creditsMin": 3,
+        "creditsMax": 3,
+        "openSeats": 3,
+        "totalSeats": 24,
+        "campus": "Lafayette",
+        "location": "",
+        "component": "Lecture",
+        "meetings": [
+         {
+          "room": "2370",
+          "building": "IVY",
+          "buildingCode": null,
+          "days": "M",
+          "startDate": "2026-08-24",
+          "endDate": "2026-10-12",
+          "startTime": 1800,
+          "endTime": 2050
+         }
+        ]
+       }
+      }
+     ]
+    }
+   }
+  }
+ }
+}

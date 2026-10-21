@@ -1,0 +1,77 @@
+{
+  "timezone": "America/Chicago",
+  "cases": [
+    {
+      "name": "events with bracketed courses, folded lines, whole days, and an old item",
+      "label": "ENGL 1213",
+      "now": "2026-09-01T00:00:00Z",
+      "text": "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nUID:hw-1\r\nDTSTART:20991115T170000Z\r\nSUMMARY:Homework 3 [CS 1213-010]\r\nURL:https://canvas.example/hw1\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:folded-1\r\nDTSTART:20991201T235900Z\r\nSUMMARY:A very long assignment title that the\r\n  feed wrapped onto a second line\r\nSTATUS:COMPLETED\r\nEND:VEVENT\r\nBEGIN:VTODO\r\nUID:todo-1\r\nDUE;VALUE=DATE:20991010\r\nSUMMARY:Reading response\r\nEND:VTODO\r\nBEGIN:VEVENT\r\nUID:old-1\r\nDTSTART:20200101T120000Z\r\nSUMMARY:Long past\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n",
+      "expected": [
+        {
+          "uid": "feed:hw-1",
+          "title": "Homework 3",
+          "course": "CS 1213-010",
+          "due": "2099-11-15T17:00:00.000Z",
+          "done": false,
+          "url": "https://canvas.example/hw1"
+        },
+        {
+          "uid": "feed:folded-1",
+          "title": "A very long assignment title that the feed wrapped onto a second line",
+          "course": "ENGL 1213",
+          "due": "2099-12-01T23:59:00.000Z",
+          "done": true,
+          "url": ""
+        },
+        {
+          "uid": "feed:todo-1",
+          "title": "Reading response",
+          "course": "ENGL 1213",
+          "due": "2099-10-11T04:59:00.000Z",
+          "done": false,
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "floating and whole-day times in the campus zone, TZID, an unknown zone, and escaped separators",
+      "label": "",
+      "now": "2026-09-01T00:00:00Z",
+      "text": "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nUID:floating-1\r\nDTSTART:20991115T235900\r\nSUMMARY:Quiz\\; part 2\\, take-home [HIST 1483]\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:zoned-1\r\nDTSTART;TZID=America/Los_Angeles:20991116T090000\r\nSUMMARY:Lab report\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:quoted-1\r\nDTSTART;TZID=\"Europe/London\":20990710T120000\r\nSUMMARY:Summer essay\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nUID:unknown-zone-1\r\nDTSTART;TZID=Central Standard Time:20991118T120000\r\nSUMMARY:Unknown zone\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n",
+      "expected": [
+        {
+          "uid": "feed:floating-1",
+          "title": "Quiz; part 2, take-home",
+          "course": "HIST 1483",
+          "due": "2099-11-16T05:59:00.000Z",
+          "done": false,
+          "url": ""
+        },
+        {
+          "uid": "feed:zoned-1",
+          "title": "Lab report",
+          "course": "",
+          "due": "2099-11-16T17:00:00.000Z",
+          "done": false,
+          "url": ""
+        },
+        {
+          "uid": "feed:quoted-1",
+          "title": "Summer essay",
+          "course": "",
+          "due": "2099-07-10T11:00:00.000Z",
+          "done": false,
+          "url": ""
+        },
+        {
+          "uid": "feed:unknown-zone-1",
+          "title": "Unknown zone",
+          "course": "",
+          "due": "2099-11-18T18:00:00.000Z",
+          "done": false,
+          "url": ""
+        }
+      ]
+    }
+  ]
+}

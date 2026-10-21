@@ -1,0 +1,13 @@
+<select id="semester" class="filter">
+    <option value="202630" <% if(semester=="202630") { %> selected="selected" <% } %>>Summer 2027</option>
+    <option value="202620" <% if(semester=="202620") { %> selected="selected" <% } %>>Spring 2027</option>
+    <option value="202610" <% if(semester=="202610") { %> selected="selected" <% } %>>Fall 2026</option>
+    <option value="202530" <% if(semester=="202530") { %> selected="selected" <% } %>>Summer 2026</option>
+</select>
+<select id="subject" class="filter" tabindex="2">
+    <option value=""></option>
+    <option value="all" selected>All Subjects</option>
+    <option value="A HI" <% if(subject_code=="A HI") { %> selected="selected" <% } %>>A HI</option>
+    <option value="C S" <% if(subject_code=="C S") { %> selected="selected" <% } %>>C S</option>
+    <option value="MATH" <% if(subject_code=="MATH") { %> selected="selected" <% } %>>MATH</option>
+</select>

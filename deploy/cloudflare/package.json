@@ -1,0 +1,15 @@
+{
+  "name": "@honorum/cloudflare",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "test": "node --test test/*.test.mjs",
+    "check": "../../apps/web/node_modules/.bin/tsc --project tsconfig.json"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260927.1",
+    "wrangler": "^4.141.0"
+  }
+}

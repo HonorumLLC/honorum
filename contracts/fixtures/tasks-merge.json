@@ -1,0 +1,434 @@
+{
+  "cases": [
+    {
+      "name": "a complete import keeps edits, takes the source's completion, and drops what disappeared",
+      "source": "canvas",
+      "complete": true,
+      "existing": [
+        {
+          "uid": "canvas:assignment:1",
+          "source": "canvas",
+          "title": "Old title",
+          "course": "My class",
+          "courseEdited": true,
+          "due": "2099-01-01T00:00:00.000Z",
+          "done": true,
+          "reason": "marked"
+        },
+        {
+          "uid": "canvas:assignment:2",
+          "source": "canvas",
+          "title": "Gone",
+          "course": "",
+          "due": "",
+          "done": false
+        },
+        {
+          "uid": "",
+          "source": "manual",
+          "title": "Mine",
+          "course": "",
+          "due": "",
+          "done": false
+        }
+      ],
+      "incoming": [
+        {
+          "uid": "canvas:assignment:1",
+          "title": "New title",
+          "course": "Canvas name",
+          "courseId": "7",
+          "courseCode": "CS-101",
+          "due": "2099-02-01T00:00:00.000Z",
+          "done": false,
+          "url": "https://c/1",
+          "overrideId": "",
+          "moduleItem": "",
+          "reason": ""
+        },
+        {
+          "uid": "canvas:assignment:3",
+          "title": "Brand new",
+          "course": "Canvas name",
+          "courseId": "7",
+          "courseCode": "CS-101",
+          "due": "",
+          "done": false,
+          "url": "",
+          "overrideId": "",
+          "moduleItem": "",
+          "reason": ""
+        }
+      ],
+      "expected": [
+        {
+          "uid": "",
+          "source": "manual",
+          "title": "Mine",
+          "course": "",
+          "due": "",
+          "done": false
+        },
+        {
+          "uid": "canvas:assignment:1",
+          "source": "canvas",
+          "title": "New title",
+          "course": "My class",
+          "courseEdited": true,
+          "due": "2099-02-01T00:00:00.000Z",
+          "done": false,
+          "reason": "",
+          "importedDue": "2099-02-01T00:00:00.000Z",
+          "courseId": "7",
+          "courseCode": "CS-101",
+          "moduleItem": "",
+          "url": "https://c/1"
+        },
+        {
+          "uid": "canvas:assignment:3",
+          "title": "Brand new",
+          "course": "Canvas name",
+          "courseId": "7",
+          "courseCode": "CS-101",
+          "due": "",
+          "done": false,
+          "url": "",
+          "overrideId": "",
+          "moduleItem": "",
+          "reason": "",
+          "importedDue": ""
+        }
+      ]
+    },
+    {
+      "name": "a preview keeps items the preview did not mention",
+      "source": "canvas",
+      "complete": false,
+      "existing": [
+        {
+          "uid": "canvas:assignment:2",
+          "source": "canvas",
+          "title": "Not yet seen",
+          "course": "",
+          "due": "",
+          "done": false,
+          "moduleItem": "2:3"
+        }
+      ],
+      "incoming": [
+        {
+          "uid": "canvas:assignment:1",
+          "title": "Preview",
+          "course": "",
+          "due": "",
+          "done": false,
+          "url": "",
+          "overrideId": "",
+          "moduleItem": "",
+          "reason": ""
+        }
+      ],
+      "expected": [
+        {
+          "uid": "canvas:assignment:2",
+          "source": "canvas",
+          "title": "Not yet seen",
+          "course": "",
+          "due": "",
+          "done": false,
+          "moduleItem": "2:3"
+        },
+        {
+          "uid": "canvas:assignment:1",
+          "title": "Preview",
+          "course": "",
+          "due": "",
+          "done": false,
+          "url": "",
+          "overrideId": "",
+          "moduleItem": "",
+          "reason": "",
+          "importedDue": ""
+        }
+      ]
+    },
+    {
+      "name": "a due date the student changed stays until the source moves its own",
+      "source": "canvas",
+      "complete": true,
+      "existing": [
+        {
+          "uid": "canvas:assignment:10",
+          "source": "canvas",
+          "title": "Task 10",
+          "course": "",
+          "due": "2099-03-05T18:00:00.000Z",
+          "done": false,
+          "importedDue": "2099-03-02T05:59:59Z"
+        },
+        {
+          "uid": "canvas:assignment:11",
+          "source": "canvas",
+          "title": "Task 11",
+          "course": "",
+          "due": "2099-03-05T18:00:00.000Z",
+          "done": false,
+          "importedDue": "2099-03-02T05:59:59Z"
+        },
+        {
+          "uid": "canvas:assignment:12",
+          "source": "canvas",
+          "title": "Task 12",
+          "course": "",
+          "due": "2099-03-05T18:00:00.000Z",
+          "done": false,
+          "importedDue": ""
+        },
+        {
+          "uid": "canvas:assignment:13",
+          "source": "canvas",
+          "title": "Task 13",
+          "course": "",
+          "due": "2099-03-05T18:00:00.000Z",
+          "done": false
+        },
+        {
+          "uid": "canvas:assignment:14",
+          "source": "canvas",
+          "title": "Task 14",
+          "course": "",
+          "due": "2099-03-02T05:59:59.000Z",
+          "done": false,
+          "importedDue": "2099-03-02T05:59:59Z"
+        }
+      ],
+      "incoming": [
+        {
+          "uid": "canvas:assignment:10",
+          "title": "Task 10",
+          "course": "",
+          "courseId": "",
+          "courseCode": "",
+          "due": "2099-03-02T05:59:59Z",
+          "done": false,
+          "url": "",
+          "overrideId": "",
+          "moduleItem": "",
+          "reason": ""
+        },
+        {
+          "uid": "canvas:assignment:11",
+          "title": "Task 11",
+          "course": "",
+          "courseId": "",
+          "courseCode": "",
+          "due": "2099-03-09T05:59:59Z",
+          "done": false,
+          "url": "",
+          "overrideId": "",
+          "moduleItem": "",
+          "reason": ""
+        },
+        {
+          "uid": "canvas:assignment:12",
+          "title": "Task 12",
+          "course": "",
+          "courseId": "",
+          "courseCode": "",
+          "due": "",
+          "done": false,
+          "url": "",
+          "overrideId": "",
+          "moduleItem": "",
+          "reason": ""
+        },
+        {
+          "uid": "canvas:assignment:13",
+          "title": "Task 13",
+          "course": "",
+          "courseId": "",
+          "courseCode": "",
+          "due": "2099-03-02T05:59:59Z",
+          "done": false,
+          "url": "",
+          "overrideId": "",
+          "moduleItem": "",
+          "reason": ""
+        },
+        {
+          "uid": "canvas:assignment:14",
+          "title": "Task 14",
+          "course": "",
+          "courseId": "",
+          "courseCode": "",
+          "due": "2099-03-02T05:59:59Z",
+          "done": false,
+          "url": "",
+          "overrideId": "",
+          "moduleItem": "",
+          "reason": ""
+        }
+      ],
+      "expected": [
+        {
+          "uid": "canvas:assignment:10",
+          "source": "canvas",
+          "title": "Task 10",
+          "course": "",
+          "due": "2099-03-05T18:00:00.000Z",
+          "done": false,
+          "importedDue": "2099-03-02T05:59:59Z",
+          "courseId": "",
+          "courseCode": "",
+          "moduleItem": "",
+          "reason": "",
+          "url": ""
+        },
+        {
+          "uid": "canvas:assignment:11",
+          "source": "canvas",
+          "title": "Task 11",
+          "course": "",
+          "due": "2099-03-09T05:59:59Z",
+          "done": false,
+          "importedDue": "2099-03-09T05:59:59Z",
+          "courseId": "",
+          "courseCode": "",
+          "moduleItem": "",
+          "reason": "",
+          "url": ""
+        },
+        {
+          "uid": "canvas:assignment:12",
+          "source": "canvas",
+          "title": "Task 12",
+          "course": "",
+          "due": "2099-03-05T18:00:00.000Z",
+          "done": false,
+          "importedDue": "",
+          "courseId": "",
+          "courseCode": "",
+          "moduleItem": "",
+          "reason": "",
+          "url": ""
+        },
+        {
+          "uid": "canvas:assignment:13",
+          "source": "canvas",
+          "title": "Task 13",
+          "course": "",
+          "due": "2099-03-02T05:59:59Z",
+          "done": false,
+          "importedDue": "2099-03-02T05:59:59Z",
+          "courseId": "",
+          "courseCode": "",
+          "moduleItem": "",
+          "reason": "",
+          "url": ""
+        },
+        {
+          "uid": "canvas:assignment:14",
+          "source": "canvas",
+          "title": "Task 14",
+          "course": "",
+          "due": "2099-03-02T05:59:59Z",
+          "done": false,
+          "importedDue": "2099-03-02T05:59:59Z",
+          "courseId": "",
+          "courseCode": "",
+          "moduleItem": "",
+          "reason": "",
+          "url": ""
+        }
+      ]
+    },
+    {
+      "name": "a complete import keeps finished tasks it no longer lists and drops open ones",
+      "source": "canvas",
+      "complete": true,
+      "existing": [
+        {
+          "uid": "canvas:assignment:20",
+          "source": "canvas",
+          "title": "Finished last month",
+          "course": "",
+          "due": "2026-08-20T04:59:59Z",
+          "done": true,
+          "reason": "submitted",
+          "importedDue": "2026-08-20T04:59:59Z"
+        },
+        {
+          "uid": "canvas:assignment:21",
+          "source": "canvas",
+          "title": "Never finished",
+          "course": "",
+          "due": "2026-08-20T04:59:59Z",
+          "done": false,
+          "reason": "",
+          "importedDue": "2026-08-20T04:59:59Z"
+        },
+        {
+          "uid": "canvas:assignment:22",
+          "source": "canvas",
+          "title": "Finished, no due date",
+          "course": "",
+          "due": "",
+          "done": true,
+          "reason": "submitted",
+          "importedDue": ""
+        }
+      ],
+      "incoming": [
+        {
+          "uid": "canvas:assignment:23",
+          "title": "Still listed",
+          "course": "",
+          "courseId": "",
+          "courseCode": "",
+          "due": "2099-01-01T00:00:00Z",
+          "done": false,
+          "url": "",
+          "overrideId": "",
+          "moduleItem": "",
+          "reason": ""
+        }
+      ],
+      "expected": [
+        {
+          "uid": "canvas:assignment:20",
+          "source": "canvas",
+          "title": "Finished last month",
+          "course": "",
+          "due": "2026-08-20T04:59:59Z",
+          "done": true,
+          "reason": "submitted",
+          "importedDue": "2026-08-20T04:59:59Z"
+        },
+        {
+          "uid": "canvas:assignment:22",
+          "source": "canvas",
+          "title": "Finished, no due date",
+          "course": "",
+          "due": "",
+          "done": true,
+          "reason": "submitted",
+          "importedDue": ""
+        },
+        {
+          "uid": "canvas:assignment:23",
+          "title": "Still listed",
+          "course": "",
+          "courseId": "",
+          "courseCode": "",
+          "due": "2099-01-01T00:00:00Z",
+          "done": false,
+          "url": "",
+          "overrideId": "",
+          "moduleItem": "",
+          "reason": "",
+          "importedDue": "2099-01-01T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

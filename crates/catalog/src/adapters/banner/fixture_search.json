@@ -1,0 +1,10 @@
+{"success":true,"totalCount":2,"data":[
+ {"courseReferenceNumber":"20411","subject":"CS","courseNumber":"101","courseTitle":"Intro to Programming","sequenceNumber":"001","scheduleTypeDescription":"Lecture","linkIdentifier":"A1","maximumEnrollment":100,"enrollment":100,"seatsAvailable":0,"waitCount":7,"creditHourLow":3,
+  "faculty":[{"displayName":"Lovelace, Ada","primaryIndicator":true}],
+  "meetingsFaculty":[{"meetingTime":{"beginTime":"0900","endTime":"0950","building":"ENG","room":"110","monday":true,"tuesday":false,"wednesday":true,"thursday":false,"friday":true,"saturday":false,"sunday":false,"meetingType":"CLAS","meetingTypeDescription":"Class","startDate":"08/24/2026","endDate":"12/11/2026"}},
+                     {"meetingTime":{"beginTime":"1900","endTime":"2100","building":"ENG","room":"110","monday":false,"tuesday":false,"wednesday":false,"thursday":true,"friday":false,"saturday":false,"sunday":false,"meetingType":"EXAM","meetingTypeDescription":"Final Exam","startDate":"12/10/2026","endDate":"12/10/2026"}}]},
+ {"courseReferenceNumber":"20412","subject":"CS","courseNumber":"101","courseTitle":"Intro to Programming","sequenceNumber":"L01","scheduleTypeDescription":"Laboratory","linkIdentifier":"A1","maximumEnrollment":30,"enrollment":25,"seatsAvailable":5,"waitCount":0,
+  "faculty":[],
+  "meetingsFaculty":[{"meetingTime":{"beginTime":"1300","endTime":"1450","building":"ENG","room":"210","monday":false,"tuesday":true,"wednesday":false,"thursday":false,"friday":false,"saturday":false,"sunday":false}},
+                     {"meetingTime":{"beginTime":null,"endTime":null,"building":null,"room":null,"monday":false,"tuesday":false,"wednesday":false,"thursday":false,"friday":false,"saturday":false,"sunday":false}}]}
+]}

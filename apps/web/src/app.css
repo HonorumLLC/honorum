@@ -1,0 +1,236 @@
+/* Honorum's design tokens and the handful of widgets every view is built
+   from. Structure follows the GNOME HIG (header bar, view switcher, utility
+   panes, boxed lists, dialogs, toasts); the look is the brand's: warm paper
+   neutrals, the mark's brown as the accent, Poppins for display text. */
+
+@font-face {
+  font-family: Poppins;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/poppins-500.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light;
+  --display: Poppins, system-ui, sans-serif;
+  --accent: #8a5c3c;        /* filled controls */
+  --accent-fg: #7a5033;     /* accent text and outlines on light ground */
+  --on-accent: #fff;
+  --bg: #f3ede6;            /* window: header bar, panes, toolbars */
+  --view: #fffdfa;          /* content */
+  --card: #fff;             /* boxed lists, popovers, dialogs */
+  --text: #2a221d; --text2: #5f544b; --muted: #8f8378;
+  --line: #e4dbd0; --hover: rgba(70, 45, 25, .07); --active: rgba(70, 45, 25, .14);
+  --tint: #f0e3d6; --today: #fbf5ee; --track: #cfc4b8;
+  --red: #b3261e; --red-bg: #c9463c; --on-red: #fff;
+  --warn-bg: #fdf1dc; --warn-fg: #6d4300; --err-bg: #fbe4e1; --err-fg: #8f231c;
+  --toast-bg: #2a221d; --toast-fg: #f6f0ea;
+  --shadow: 0 1px 2px rgba(40, 25, 10, .06), 0 6px 20px rgba(40, 25, 10, .12);
+  --now: #d9402f;
+  --event-ink: #241d18; --event-ink2: #514740;
+  --radius: 10px;
+  /* Motion, as in lib/motion.js: opening starts at once and settles softly;
+     closing is shorter and even. Menus take the quick lengths. */
+  --ease-open: cubic-bezier(.35, .75, .25, 1); --ease-close: cubic-bezier(.4, 0, .2, 1);
+  --open: .32s; --close: .26s; --quick-open: .16s; --quick-close: .11s;
+  /* Progress rings: dusty red, pale apricot, and soft blue on light surfaces.
+     Each track is its ring's color mixed into the card. */
+  --ring-day: #d57a7e; --ring-week: #f8b585; --ring-term: #70b1ea; --ring-mix: 20%;
+  /* A class's pastel drawn as a line, like a task's tick circle: its hue, darker and stronger. */
+  --class-ink-l: .62; --class-ink-k: 3.6;
+  /* The streak's flame: a warm gradient from its base to its tip, and a lighter core. */
+  --flame: #e8492b; --flame-tip: #f7a431; --flame-core: #ffd98c;
+  --streak-dot: #eba363; --streak-ring: #eba363;
+}
+/* Dark tokens follow the system preference; there is no per-app style switch. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --accent: #c99f7c; --accent-fg: #ddb996; --on-accent: #231810;
+    --bg: #1e1a17; --view: #262220; --card: #2e2926;
+    --text: #ece5de; --text2: #bfb4a9; --muted: #948a80;
+    --line: #3b3430; --hover: rgba(255, 245, 235, .07); --active: rgba(255, 245, 235, .14);
+    --tint: #3d3128; --today: #2c2623; --track: #4c443e;
+    --red: #f09a8f; --red-bg: #c9463c;
+    --warn-bg: #3d2f12; --warn-fg: #f2cd8a; --err-bg: #452220; --err-fg: #f3aaa2;
+    --toast-bg: #ece5de; --toast-fg: #1e1a17;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .5);
+    --now: #ff7a68;
+    --event-ink: #1c1614; --event-ink2: #3f3530;
+    --ring-day: #ff7a68; --ring-week: #f0b35a; --ring-term: #8fb0d0; --ring-mix: 24%;
+    --class-ink-l: .86; --class-ink-k: 1.6;
+    --flame: #ff6f52; --flame-tip: #ffb347; --flame-core: #ffe3a6;
+    --streak-dot: var(--accent); --streak-ring: var(--accent-fg);
+  }
+}
+
+/* Base */
+*, *::before, *::after { box-sizing: border-box; }
+/* The height chain reaches the window so a bottom bar sits above a phone's browser toolbar. */
+html, body, #app { height: 100%; }
+/* Keep the page at one scale on phones: no font inflation, no double-tap zoom. */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { touch-action: manipulation; }
+#app { display: flex; flex-direction: column; }
+body { margin: 0; font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Adwaita Sans", Inter, sans-serif; color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; margin: 0; }
+button { cursor: pointer; }
+a { color: var(--accent-fg); }
+h1, h2, h3, h4, p, ul { margin: 0; }
+h1, h2, h3, h4 { font-size: inherit; }
+ul { padding: 0; list-style: none; }
+:focus-visible { outline: 2px solid var(--accent-fg); outline-offset: 2px; }
+.i { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.dim { color: var(--muted); }
+.display, .title { font-family: var(--display); font-weight: 500; letter-spacing: -.01em; }
+.title { font-size: 1.05rem; line-height: 1.3; }
+.heading { font-weight: 600; }
+.caption { font-size: .8rem; color: var(--muted); }
+.group-title { display: block; margin: 0 0 6px 2px; font-size: .8rem; font-weight: 600; color: var(--muted); }
+.group + .group, .group-title:not(:first-child) { margin-top: 20px; }
+kbd { font: inherit; font-size: .8rem; color: var(--muted); }
+[hidden] { display: none !important; }
+
+/* Buttons. Flat in toolbars and header bars; filled otherwise; the one
+   suggested action per view is the accent pill. */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 34px; min-width: 34px; padding: 0 12px; border: 0; border-radius: 8px; background: var(--hover); color: var(--text); font-weight: 500; line-height: 1; white-space: nowrap; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) { .btn:hover { background: var(--active); } }
+.btn:active { background: var(--active); filter: brightness(.95); }
+.btn:disabled { opacity: .4; cursor: default; }
+.btn:focus-visible { outline-offset: -2px; }
+.btn.flat { background: none; }
+@media (hover: hover) { .btn.flat:hover { background: var(--hover); } }
+.btn.flat:active, .btn.on { background: var(--active); }
+.btn.on { color: var(--accent-fg); }
+.btn.icon { padding: 0; width: 34px; }
+.btn.round { border-radius: 50%; }
+.btn.pill { border-radius: 999px; min-height: 36px; padding: 0 18px; }
+.btn.suggested { background: var(--accent); color: var(--on-accent); }
+@media (hover: hover) { .btn.suggested:hover { filter: brightness(1.08); } }
+.btn.destructive { background: var(--red-bg); color: var(--on-red); }
+.btn.link { background: none; color: var(--accent-fg); padding: 0 4px; min-height: 0; }
+@media (hover: hover) { .btn.link:hover { text-decoration: underline; } }
+.btn .i.caret { margin: 0 -4px 0 -2px; opacity: .7; }
+.linked { display: inline-flex; }
+.linked .btn { border-radius: 0; }
+.linked .btn:first-child { border-radius: 8px 0 0 8px; }
+.linked .btn:last-child { border-radius: 0 8px 8px 0; }
+.linked .btn + .btn { margin-left: 1px; }
+.linked.fill { display: flex; }
+.linked.fill .btn { flex: 1; padding: 0 6px; }
+
+/* Boxed lists: a card of rows; rows hold a title, a subtitle and one control.
+   The divider outranks the reset on button and link rows. The end rows take
+   the card's corners, so a focus ring inside them is not clipped. */
+.list { background: var(--card); border-radius: var(--radius); box-shadow: 0 0 0 1px var(--line); overflow: hidden; }
+.list > :not(:first-child) { border-top: 1px solid var(--line); }
+.list > :first-child { border-top-left-radius: inherit; border-top-right-radius: inherit; }
+.list > :last-child { border-bottom-left-radius: inherit; border-bottom-right-radius: inherit; }
+.row { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 8px 12px; color: inherit; text-align: left; }
+button.row, a.row { border: 0; background: none; text-decoration: none; cursor: pointer; }
+@media (hover: hover) { button.row:hover, a.row:hover { background: var(--hover); } }
+button.row:focus-visible, a.row:focus-visible { outline-offset: -2px; }
+button.row:disabled { cursor: default; background: none; }
+button.row:disabled .t { color: var(--muted); }
+.row.destructive .t { color: var(--red); }
+.rt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.rt .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rt .s { font-size: .8rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rt .s.wrap { white-space: normal; }
+.rt .t.wrap { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+.row .chev { display: flex; color: var(--muted); }
+/* A row's leading icon on a tinted disc. */
+.fi { display: flex; align-items: center; justify-content: center; flex: none; width: 36px; height: 36px; border-radius: 50%; background: var(--tint); color: var(--accent-fg); }
+.row-btn { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; }
+.combo { position: relative; display: inline-flex; align-items: center; flex: none; max-width: 55%; color: var(--text2); }
+.combo select { appearance: none; max-width: 100%; padding: 6px 26px 6px 8px; border: 0; border-radius: 6px; background: none; color: inherit; text-overflow: ellipsis; cursor: pointer; }
+@media (hover: hover) { .combo select:hover { background: var(--hover); } }
+.combo .i { position: absolute; right: 6px; pointer-events: none; }
+
+/* View switcher: a few equivalent views, as a bar along a phone's bottom
+   edge with the icon above the label. */
+.viewbar { flex: none; padding-bottom: env(safe-area-inset-bottom); background: var(--bg); box-shadow: inset 0 1px var(--line); }
+.views { display: flex; }
+.views button { position: relative; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 54px; padding: 6px 0; border: 0; background: none; color: var(--muted); font-size: .72rem; font-weight: 500; -webkit-tap-highlight-color: transparent; }
+.views button.on { color: var(--accent-fg); }
+.views .i { width: 22px; height: 22px; stroke-width: 1.6; }
+
+/* Search entry: a soft pill with the magnifier at the start. */
+.entry { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 999px; background: var(--hover); color: var(--muted); }
+.entry:focus-within { box-shadow: 0 0 0 2px var(--accent-fg); }
+.entry input { flex: 1; min-width: 0; border: 0; background: none; outline: 0; color: var(--text); }
+.entry input::-webkit-search-cancel-button { display: none; }
+.entry .clear { display: none; padding: 0; border: 0; background: none; color: inherit; }
+.entry:has(input:not(:placeholder-shown)) .clear { display: inline-flex; }
+
+/* Dialog form fields. */
+.field { display: block; margin-bottom: 12px; }
+.field > span { display: block; margin-bottom: 4px; font-size: .8rem; font-weight: 500; color: var(--text2); }
+.field input:not(.switch):not(.check), .field select, .field textarea, .input { display: block; width: 100%; min-height: 36px; padding: 6px 10px; border: 0; border-radius: 8px; background: var(--hover); color: var(--text); }
+.field input:not(.switch):not(.check):focus, .field select:focus, .input:focus { outline: 2px solid var(--accent-fg); outline-offset: -1px; }
+.field select { appearance: none; padding-right: 30px; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 15px) 15px, calc(100% - 10px) 15px; background-size: 5px 5px; background-repeat: no-repeat; }
+/* iOS gives date and time inputs an intrinsic width that ignores width: 100% until their native look is dropped, so side-by-side fields overlapped. */
+.field input[type="date"], .field input[type="time"] { -webkit-appearance: none; appearance: none; min-width: 0; text-align: left; }
+.field input::-webkit-date-and-time-value { min-height: 1.4em; text-align: left; }
+.field input::-webkit-calendar-picker-indicator { opacity: .6; }
+.field.inline { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.field.inline > span { margin: 0; font-size: inherit; font-weight: 400; color: var(--text); }
+.fields { display: flex; gap: 10px; }
+.fields .field { flex: 1; min-width: 0; }
+.hint { font-size: .8rem; color: var(--muted); }
+
+/* A round tick and a switch. */
+.check { appearance: none; position: relative; flex: none; width: 20px; height: 20px; border: 2px solid var(--track); border-radius: 50%; background: var(--card); cursor: pointer; }
+.check::after { content: ''; position: absolute; left: 5px; top: 1.5px; width: 5px; height: 9px; border: solid var(--on-accent); border-width: 0 2px 2px 0; transform: rotate(45deg) scale(0); }
+.check:checked { background: var(--accent); border-color: var(--accent); }
+.check:checked::after { transform: rotate(45deg) scale(1); }
+.switch { appearance: none; position: relative; flex: none; width: 40px; height: 24px; border-radius: 999px; background: var(--track); cursor: pointer; }
+.switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .3); transition: transform .12s; }
+.switch:checked { background: var(--accent); }
+.switch:checked::after { transform: translateX(16px); }
+.switch:disabled { opacity: .5; cursor: default; }
+
+/* Pastel class colors were chosen for paper white; on dark surfaces they are dimmed a little. */
+@media (prefers-color-scheme: dark) { .pastel { filter: brightness(.82) saturate(1.1); } }
+/* Course chips carry the class color. */
+.rt .s .chip { margin-right: 6px; }
+.chip { display: inline-block; padding: 0 6px; border-radius: 4px; color: var(--event-ink); font-size: .74rem; font-weight: 600; line-height: 18px; white-space: nowrap; }
+
+/* Placeholder page for an empty view. */
+.status { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 28rem; margin: 0 auto; padding: 32px 20px; text-align: center; }
+.status .glyph { display: flex; align-items: center; justify-content: center; width: 72px; height: 72px; border-radius: 50%; background: var(--tint); color: var(--accent-fg); }
+.status .glyph .i { width: 34px; height: 34px; stroke-width: 1.5; }
+.status h2 { margin-top: 14px; font-family: var(--display); font-weight: 500; font-size: 1.3rem; line-height: 1.25; }
+.status p { margin-top: 6px; color: var(--text2); }
+.status .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 18px; }
+.status.fill { flex: 1; }
+
+/* Banners: a strip along the top of a view for an ongoing state. */
+.banner { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px 12px; min-height: 40px; padding: 6px 12px; background: var(--warn-bg); color: var(--warn-fg); font-size: .88rem; font-weight: 500; }
+.banner.error { background: var(--err-bg); color: var(--err-fg); }
+.banner .btn { min-height: 28px; color: inherit; background: color-mix(in srgb, currentColor 12%, transparent); }
+@media (hover: hover) { .banner .btn:hover { background: color-mix(in srgb, currentColor 20%, transparent); } }
+
+/* Determinate progress. */
+.progress { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.progress > span { display: block; height: 100%; background: var(--accent); transition: width .2s; }
+@media (prefers-reduced-motion: no-preference) {
+  .spin .i { animation: spin 1s linear infinite; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+@media print {
+  body { background: #fff; }
+}
+
+/* Touch targets grow without changing the desktop density. */
+@media (pointer: coarse) {
+  #app .btn, #app .entry, #app button.row { min-height: 44px; }
+  #app .btn.icon { min-width: 44px; }
+  /* iOS zooms into any field smaller than 16px when it gains focus. */
+  #app input:not([type="checkbox"]):not([type="radio"]), #app select, #app textarea { font-size: max(16px, 1em); }
+}

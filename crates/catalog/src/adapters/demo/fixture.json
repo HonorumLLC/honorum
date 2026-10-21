@@ -1,0 +1,588 @@
+{
+ "terms": [
+  {
+   "id": "2026FA",
+   "name": "Fall 2026",
+   "start": "2026-08-24",
+   "end": "2026-12-11"
+  }
+ ],
+ "sections": [
+  {
+   "id": "10001",
+   "course": "CS 101",
+   "subject": "CS",
+   "title": "Introduction to Programming",
+   "num": "001",
+   "type": "LEC",
+   "link": "A",
+   "instructors": [
+    "Ada Lovelace"
+   ],
+   "meetings": [
+    {
+     "days": "MWF",
+     "start": 540,
+     "end": 590,
+     "location": "Engineering 110"
+    }
+   ],
+   "exams": [
+    {
+     "date": "2026-10-08",
+     "start": 1140,
+     "end": 1260,
+     "location": "Engineering 110"
+    },
+    {
+     "date": "2026-12-09",
+     "start": 480,
+     "end": 600,
+     "location": "Engineering 110"
+    }
+   ],
+   "capacity": 120,
+   "available": 0,
+   "waitlist": 14,
+   "credits": 3
+  },
+  {
+   "id": "10002",
+   "course": "CS 101",
+   "subject": "CS",
+   "title": "Introduction to Programming",
+   "num": "L01",
+   "type": "LAB",
+   "link": "A",
+   "instructors": [
+    "Grace Hopper"
+   ],
+   "meetings": [
+    {
+     "days": "T",
+     "start": 780,
+     "end": 890,
+     "location": "Engineering 210"
+    }
+   ],
+   "capacity": 30,
+   "available": 0,
+   "waitlist": 5,
+   "credits": 0
+  },
+  {
+   "id": "10003",
+   "course": "CS 101",
+   "subject": "CS",
+   "title": "Introduction to Programming",
+   "num": "L02",
+   "type": "LAB",
+   "link": "A",
+   "instructors": [
+    "Grace Hopper"
+   ],
+   "meetings": [
+    {
+     "days": "R",
+     "start": 780,
+     "end": 890,
+     "location": "Engineering 210"
+    }
+   ],
+   "capacity": 30,
+   "available": 2,
+   "waitlist": 0,
+   "credits": 0
+  },
+  {
+   "id": "10004",
+   "course": "CS 101",
+   "subject": "CS",
+   "title": "Introduction to Programming",
+   "num": "002",
+   "type": "LEC",
+   "link": "B",
+   "instructors": [
+    "Alan Turing"
+   ],
+   "meetings": [
+    {
+     "days": "TR",
+     "start": 600,
+     "end": 675,
+     "location": "Engineering 110"
+    }
+   ],
+   "exams": [
+    {
+     "date": "2026-10-08",
+     "start": 1140,
+     "end": 1260,
+     "location": "Engineering 110"
+    },
+    {
+     "date": "2026-12-09",
+     "start": 480,
+     "end": 600,
+     "location": "Engineering 110"
+    }
+   ],
+   "capacity": 120,
+   "available": 33,
+   "waitlist": 0,
+   "credits": 3
+  },
+  {
+   "id": "10005",
+   "course": "CS 101",
+   "subject": "CS",
+   "title": "Introduction to Programming",
+   "num": "L03",
+   "type": "LAB",
+   "link": "B",
+   "instructors": [
+    "Alan Turing"
+   ],
+   "meetings": [
+    {
+     "days": "W",
+     "start": 840,
+     "end": 950,
+     "location": "Engineering 210"
+    }
+   ],
+   "capacity": 30,
+   "available": 9,
+   "waitlist": 0,
+   "credits": 0
+  },
+  {
+   "id": "10010",
+   "course": "CS 240",
+   "subject": "CS",
+   "title": "Data Structures",
+   "num": "001",
+   "type": "LEC",
+   "instructors": [
+    "Barbara Liskov"
+   ],
+   "meetings": [
+    {
+     "days": "MW",
+     "start": 660,
+     "end": 735,
+     "location": "Engineering 120"
+    }
+   ],
+   "exams": [
+    {
+     "date": "2026-12-11",
+     "start": 780,
+     "end": 900,
+     "location": "Engineering 120"
+    }
+   ],
+   "capacity": 80,
+   "available": 0,
+   "waitlist": 21,
+   "credits": 3
+  },
+  {
+   "id": "10011",
+   "course": "CS 240",
+   "subject": "CS",
+   "title": "Data Structures",
+   "num": "002",
+   "type": "LEC",
+   "instructors": [
+    "Barbara Liskov"
+   ],
+   "meetings": [
+    {
+     "days": "TR",
+     "start": 900,
+     "end": 975,
+     "location": "Engineering 120"
+    }
+   ],
+   "capacity": 80,
+   "available": 4,
+   "waitlist": 0,
+   "credits": 3
+  },
+  {
+   "id": "10020",
+   "course": "MATH 151",
+   "subject": "MATH",
+   "title": "Calculus I",
+   "num": "001",
+   "type": "LEC",
+   "instructors": [
+    "Emmy Noether"
+   ],
+   "meetings": [
+    {
+     "days": "MWF",
+     "start": 540,
+     "end": 590,
+     "location": "Science 201"
+    }
+   ],
+   "capacity": 60,
+   "available": 12,
+   "waitlist": 0,
+   "credits": 4
+  },
+  {
+   "id": "10021",
+   "course": "MATH 151",
+   "subject": "MATH",
+   "title": "Calculus I",
+   "num": "002",
+   "type": "LEC",
+   "instructors": [
+    "Emmy Noether"
+   ],
+   "meetings": [
+    {
+     "days": "MWF",
+     "start": 720,
+     "end": 770,
+     "location": "Science 201"
+    }
+   ],
+   "capacity": 60,
+   "available": 0,
+   "waitlist": 8,
+   "credits": 4
+  },
+  {
+   "id": "10022",
+   "course": "MATH 151",
+   "subject": "MATH",
+   "title": "Calculus I",
+   "num": "003",
+   "type": "LEC",
+   "instructors": [
+    "Carl Gauss"
+   ],
+   "meetings": [
+    {
+     "days": "TR",
+     "start": 810,
+     "end": 885,
+     "location": "Science 105"
+    }
+   ],
+   "capacity": 60,
+   "available": 25,
+   "waitlist": 0,
+   "credits": 4
+  },
+  {
+   "id": "10030",
+   "course": "PHYS 201",
+   "subject": "PHYS",
+   "title": "Physics I: Mechanics",
+   "num": "001",
+   "type": "LEC",
+   "link": "P1",
+   "instructors": [
+    "Richard Feynman"
+   ],
+   "meetings": [
+    {
+     "days": "TR",
+     "start": 600,
+     "end": 675,
+     "location": "Science 300"
+    }
+   ],
+   "capacity": 90,
+   "available": 7,
+   "waitlist": 0,
+   "credits": 4
+  },
+  {
+   "id": "10031",
+   "course": "PHYS 201",
+   "subject": "PHYS",
+   "title": "Physics I: Mechanics",
+   "num": "L01",
+   "type": "LAB",
+   "link": "P1",
+   "instructors": [
+    "Lise Meitner"
+   ],
+   "meetings": [
+    {
+     "days": "M",
+     "start": 840,
+     "end": 1010,
+     "location": "Science 310"
+    }
+   ],
+   "capacity": 24,
+   "available": 0,
+   "waitlist": 3,
+   "credits": 0
+  },
+  {
+   "id": "10032",
+   "course": "PHYS 201",
+   "subject": "PHYS",
+   "title": "Physics I: Mechanics",
+   "num": "L02",
+   "type": "LAB",
+   "link": "P1",
+   "instructors": [
+    "Lise Meitner"
+   ],
+   "meetings": [
+    {
+     "days": "F",
+     "start": 780,
+     "end": 950,
+     "location": "Science 310"
+    }
+   ],
+   "capacity": 24,
+   "available": 6,
+   "waitlist": 0,
+   "credits": 0
+  },
+  {
+   "id": "10040",
+   "course": "ENGL 110",
+   "subject": "ENGL",
+   "title": "College Writing",
+   "num": "001",
+   "type": "SEM",
+   "instructors": [
+    "Toni Morrison"
+   ],
+   "meetings": [
+    {
+     "days": "MW",
+     "start": 900,
+     "end": 975,
+     "location": "Humanities 12"
+    }
+   ],
+   "capacity": 20,
+   "available": 1,
+   "waitlist": 0,
+   "credits": 3
+  },
+  {
+   "id": "10041",
+   "course": "ENGL 110",
+   "subject": "ENGL",
+   "title": "College Writing",
+   "num": "002",
+   "type": "SEM",
+   "instructors": [
+    "James Baldwin"
+   ],
+   "meetings": [
+    {
+     "days": "TR",
+     "start": 1020,
+     "end": 1095,
+     "location": "Humanities 12"
+    }
+   ],
+   "capacity": 20,
+   "available": 0,
+   "waitlist": 6,
+   "credits": 3
+  },
+  {
+   "id": "10050",
+   "course": "HIST 130",
+   "subject": "HIST",
+   "title": "World History to 1500",
+   "num": "001",
+   "type": "LEC",
+   "instructors": [
+    "Howard Zinn"
+   ],
+   "meetings": [
+    {
+     "days": "MWF",
+     "start": 600,
+     "end": 650,
+     "location": "Humanities 200"
+    }
+   ],
+   "capacity": 100,
+   "available": 41,
+   "waitlist": 0,
+   "credits": 3
+  },
+  {
+   "id": "10060",
+   "course": "CHEM 121",
+   "subject": "CHEM",
+   "title": "General Chemistry I",
+   "num": "001",
+   "type": "LEC",
+   "link": "C1",
+   "instructors": [
+    "Marie Curie"
+   ],
+   "meetings": [
+    {
+     "days": "MWF",
+     "start": 660,
+     "end": 710,
+     "location": "Science 100"
+    }
+   ],
+   "capacity": 150,
+   "available": 0,
+   "waitlist": 30,
+   "credits": 4
+  },
+  {
+   "id": "10061",
+   "course": "CHEM 121",
+   "subject": "CHEM",
+   "title": "General Chemistry I",
+   "num": "L01",
+   "type": "LAB",
+   "link": "C1",
+   "instructors": [
+    "Rosalind Franklin"
+   ],
+   "meetings": [
+    {
+     "days": "T",
+     "start": 540,
+     "end": 710,
+     "location": "Science 150"
+    }
+   ],
+   "capacity": 24,
+   "available": 0,
+   "waitlist": 4,
+   "credits": 0
+  },
+  {
+   "id": "10062",
+   "course": "CHEM 121",
+   "subject": "CHEM",
+   "title": "General Chemistry I",
+   "num": "L02",
+   "type": "LAB",
+   "link": "C1",
+   "instructors": [
+    "Rosalind Franklin"
+   ],
+   "meetings": [
+    {
+     "days": "R",
+     "start": 540,
+     "end": 710,
+     "location": "Science 150"
+    }
+   ],
+   "capacity": 24,
+   "available": 3,
+   "waitlist": 0,
+   "credits": 0
+  },
+  {
+   "id": "10070",
+   "course": "ART 105",
+   "subject": "ART",
+   "title": "Drawing Fundamentals",
+   "num": "001",
+   "type": "STU",
+   "instructors": [
+    "Frida Kahlo"
+   ],
+   "meetings": [
+    {
+     "days": "TR",
+     "start": 540,
+     "end": 700,
+     "location": "Arts 40"
+    }
+   ],
+   "capacity": 18,
+   "available": 2,
+   "waitlist": 0,
+   "credits": 3
+  },
+  {
+   "id": "10080",
+   "course": "ECON 101",
+   "subject": "ECON",
+   "title": "Principles of Microeconomics",
+   "num": "001",
+   "type": "LEC",
+   "instructors": [
+    "Joan Robinson"
+   ],
+   "meetings": [
+    {
+     "days": "TR",
+     "start": 720,
+     "end": 795,
+     "location": "Business 100"
+    }
+   ],
+   "capacity": 200,
+   "available": 58,
+   "waitlist": 0,
+   "credits": 3
+  },
+  {
+   "id": "10081",
+   "course": "ECON 101",
+   "subject": "ECON",
+   "title": "Principles of Microeconomics",
+   "num": "002",
+   "type": "LEC",
+   "instructors": [
+    "Joan Robinson"
+   ],
+   "meetings": [
+    {
+     "days": "MW",
+     "start": 960,
+     "end": 1035,
+     "location": "Business 100"
+    }
+   ],
+   "capacity": 200,
+   "available": 0,
+   "waitlist": 12,
+   "credits": 3
+  },
+  {
+   "id": "10090",
+   "course": "MUS 100",
+   "subject": "MUS",
+   "title": "Music Appreciation",
+   "num": "001",
+   "type": "LEC",
+   "instructors": [
+    "Nina Simone"
+   ],
+   "meetings": [
+    {
+     "days": "W",
+     "start": 1080,
+     "end": 1230,
+     "location": "Arts 10"
+    }
+   ],
+   "capacity": 60,
+   "available": 15,
+   "waitlist": 0,
+   "credits": 3
+  }
+ ]
+}

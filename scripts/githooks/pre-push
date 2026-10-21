@@ -1,0 +1,80 @@
+#!/bin/bash
+# Install local checks with `make hooks`.
+# Use HONORUM_SKIP_CHECKS=1 git push to skip them once.
+set -uo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+if [ -n "${HONORUM_SKIP_CHECKS:-}" ]; then
+  echo "pre-push: skipped by HONORUM_SKIP_CHECKS"
+  exit 0
+fi
+
+failed=0
+skipped=()
+
+run() {
+  local name=$1
+  shift
+  printf 'pre-push: %s… ' "$name"
+  if output=$("$@" 2>&1); then
+    echo ok
+  else
+    echo FAILED
+    echo "$output" | tail -30
+    failed=1
+  fi
+}
+
+# What is being pushed, so a documentation change does not run every suite.
+branch=$(git rev-parse --abbrev-ref HEAD)
+base=$(git merge-base HEAD origin/main 2>/dev/null || echo "")
+changed=$(if [ -n "$base" ]; then git diff --name-only "$base" HEAD; else git ls-files; fi)
+touched() { echo "$changed" | grep -q "$1"; }
+
+if touched '^\(crates\|contracts\|config\|apps/web\|deploy\)/\|^Cargo\.\(toml\|lock\)$\|^rustfmt\.toml$\|^scripts/postgres\.sh$\|^docker-compose\.yml$'; then
+  if command -v cargo > /dev/null; then
+    run "rust lint" make lint
+    run "rust tests" ./scripts/postgres.sh test cargo test --workspace --all-features --locked
+  else
+    skipped+=("server checks (cargo is not installed)")
+  fi
+fi
+
+if touched '^apps/web/'; then
+  if command -v npm > /dev/null; then
+    run "web unit tests" npm --prefix apps/web test
+    run "web types and lint" npm --prefix apps/web run check
+  else
+    skipped+=("web checks (npm is not installed)")
+  fi
+fi
+
+if touched '^deploy/'; then
+  if command -v npm > /dev/null; then
+    run "deploy tests" npm --prefix deploy/cloudflare test
+    run "deploy types" npm --prefix deploy/cloudflare run check
+  else
+    skipped+=("deploy checks (npm is not installed)")
+  fi
+fi
+
+if touched '^apps/ios/'; then
+  if command -v xcodebuild > /dev/null; then
+    run "iOS tests" make test-ios
+  else
+    skipped+=("iOS tests (Xcode is not installed)")
+  fi
+fi
+
+for note in ${skipped+"${skipped[@]}"}; do
+  echo "pre-push: skipped $note"
+done
+
+if [ "$failed" -ne 0 ]; then
+  echo
+  echo "pre-push: checks failed. Fix them, or push with HONORUM_SKIP_CHECKS=1 to override."
+  exit 1
+fi
+
+echo "pre-push: $branch is ready."
+exit 0

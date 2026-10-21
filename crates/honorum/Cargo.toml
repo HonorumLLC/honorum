@@ -1,0 +1,39 @@
+[package]
+name = "honorum"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[dependencies]
+anyhow = "1.0.104"
+axum = "0.8.9"
+honorum-catalog = { version = "0.1.0", path = "../catalog" }
+honorum-server = { version = "0.1.0", path = "../server" }
+rust-embed = { version = "8.13.0", optional = true }
+tokio = { version = "1.53.3", features = ["full"] }
+tokio-util = "0.7.20"
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+
+[features]
+default = ["web"]
+# Embeds the built web client (`apps/web/dist`); run `npm --prefix apps/web
+# run build` first. Without it (`--no-default-features`) the binary serves
+# the API only and the web client is hosted separately.
+web = ["dep:rust-embed"]
+# The development labs (`honorum-lab`); see `crates/server/src/lab`.
+lab = ["honorum-server/lab", "honorum-server/testing"]
+
+[[bin]]
+name = "honorum"
+path = "src/main.rs"
+
+[[bin]]
+name = "honorum-lab"
+path = "src/bin/honorum-lab.rs"
+required-features = ["lab"]
+
+[lints]
+workspace = true

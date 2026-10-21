@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE websoc_results SYSTEM "https://websoc.reg.uci.edu/css/xml/WebSocResults.dtd">
+<websoc_results  get_parm="YearTerm=2026-92&amp;Dept=COMPSCI" generated="2026-09-02/20:31:45" author="UC Irvine Registrar Office">
+    <search_criteria>
+	<criterion>Department: COMPSCI</criterion>
+	<criterion>Exclude cancelled courses</criterion>
+    </search_criteria>
+    <term>
+	<term_yyyyst>202692</term_yyyyst>
+	<term_year>2026</term_year>
+	<term_name>Fall Quarter</term_name>
+	<term_status_msg>Registration for term ends on Tuesday, September 15, 2026</term_status_msg>
+    </term>
+    <course_list>
+	<school  school_code="95"  school_name="Donald Bren School of Information and Computer Sciences">
+	    <department  dept_code="COMPSCI"  dept_case="CompSci"  dept_name="Computer Science">
+		<course  course_number="116"  course_title="COMP PHOTO &amp; VISION">
+		    <course_prereq_link>https://www.reg.uci.edu/cob/prrqcgi?term=202692&amp;dept=COMPSCI&amp;action=view_by_term#116</course_prereq_link>
+		    <section>
+			<course_code>34020</course_code>
+			<sec_type>Lec</sec_type>
+			<sec_num>A</sec_num>
+			<sec_units>4</sec_units>
+			<sec_instructors>
+			    <instructor>BERG, A.</instructor>
+			    <instructor>STAFF</instructor>
+			    <instructor>STAFF</instructor>
+			</sec_instructors>
+			<sec_modality>In-Person</sec_modality>
+			<sec_meetings>
+			    <sec_meet>
+				<sec_days>TuTh</sec_days>
+				<sec_time> 3:30- 4:50p</sec_time>
+				<sec_bldg>ELH</sec_bldg>
+				<sec_room>100</sec_room>
+				<sec_room_link>https://classrooms.uci.edu/classroomtechnology/classrooms/elh/elh-100</sec_room_link>
+			    </sec_meet>
+			</sec_meetings>
+			<sec_enrollment>
+			    <sec_max_enroll>246</sec_max_enroll>
+			    <sec_enrolled>174</sec_enrolled>
+			    <sec_enroll_requests>258</sec_enroll_requests>
+			    <sec_new_only_reserved>0</sec_new_only_reserved>
+			    <sec_waitlist>0</sec_waitlist>
+			    <sec_wait_cap>123</sec_wait_cap>
+			</sec_enrollment>
+			<sec_restrictions>A</sec_restrictions>
+			<sec_books>https://uci.bncollege.com</sec_books>
+			<sec_graded>1</sec_graded>
+			<sec_linkage>
+			    <sec_backward_ptr>00000</sec_backward_ptr>
+			    <sec_group_backward_ptr>00000</sec_group_backward_ptr>
+			    <sec_forward_ptr>00000</sec_forward_ptr>
+			    <sec_group_forward_ptr>00000</sec_group_forward_ptr>
+			</sec_linkage>
+			<sec_status>OPEN</sec_status>
+			<sec_active>1</sec_active>
+		    </section>
+		</course></department></school></course_list></websoc_results>

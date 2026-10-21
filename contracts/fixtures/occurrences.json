@@ -1,0 +1,362 @@
+{
+  "cases": [
+    {
+      "name": "meets on its weekdays inside the term",
+      "item": {
+        "id": "a",
+        "meetings": [
+          {
+            "days": "MWF",
+            "start": 540,
+            "end": 590
+          }
+        ],
+        "section": {
+          "id": "a"
+        }
+      },
+      "term": {
+        "start": "2026-08-24",
+        "end": "2026-12-11"
+      },
+      "closures": {},
+      "date": "2026-09-11",
+      "expected": [
+        [
+          "MWF",
+          540,
+          590
+        ]
+      ]
+    },
+    {
+      "name": "not on other weekdays",
+      "item": {
+        "id": "a",
+        "meetings": [
+          {
+            "days": "MWF",
+            "start": 540,
+            "end": 590
+          }
+        ],
+        "section": {
+          "id": "a"
+        }
+      },
+      "term": {
+        "start": "2026-08-24",
+        "end": "2026-12-11"
+      },
+      "closures": {},
+      "date": "2026-09-10",
+      "expected": []
+    },
+    {
+      "name": "not before the term",
+      "item": {
+        "id": "a",
+        "meetings": [
+          {
+            "days": "MWF",
+            "start": 540,
+            "end": 590
+          }
+        ],
+        "section": {
+          "id": "a"
+        }
+      },
+      "term": {
+        "start": "2026-08-24",
+        "end": "2026-12-11"
+      },
+      "closures": {},
+      "date": "2026-08-21",
+      "expected": []
+    },
+    {
+      "name": "a removed date is skipped",
+      "item": {
+        "id": "a",
+        "meetings": [
+          {
+            "days": "MWF",
+            "start": 540,
+            "end": 590
+          }
+        ],
+        "section": {
+          "id": "a"
+        },
+        "removed": [
+          "2026-09-11"
+        ]
+      },
+      "term": {
+        "start": "2026-08-24",
+        "end": "2026-12-11"
+      },
+      "closures": {},
+      "date": "2026-09-11",
+      "expected": []
+    },
+    {
+      "name": "a closure cancels class",
+      "item": {
+        "id": "a",
+        "meetings": [
+          {
+            "days": "MWF",
+            "start": 540,
+            "end": 590
+          }
+        ],
+        "section": {
+          "id": "a"
+        }
+      },
+      "term": {
+        "start": "2026-08-24",
+        "end": "2026-12-11"
+      },
+      "closures": {
+        "2026-09-07": {
+          "name": "Labor Day",
+          "follows": ""
+        }
+      },
+      "date": "2026-09-07",
+      "expected": []
+    },
+    {
+      "name": "a substitute weekday runs another day's classes",
+      "item": {
+        "id": "a",
+        "meetings": [
+          {
+            "days": "M",
+            "start": 540,
+            "end": 590
+          }
+        ],
+        "section": {
+          "id": "a"
+        }
+      },
+      "term": {
+        "start": "2026-08-24",
+        "end": "2026-12-11"
+      },
+      "closures": {
+        "2026-11-24": {
+          "name": "Monday schedule",
+          "follows": "M"
+        }
+      },
+      "date": "2026-11-24",
+      "expected": [
+        [
+          "M",
+          540,
+          590
+        ]
+      ]
+    },
+    {
+      "name": "a closure from partway through the day cancels only later classes",
+      "item": {
+        "id": "a",
+        "meetings": [
+          {
+            "days": "TR",
+            "start": 540,
+            "end": 615
+          },
+          {
+            "days": "TR",
+            "start": 900,
+            "end": 975
+          },
+          {
+            "days": "TR",
+            "start": 930,
+            "end": 1005
+          }
+        ],
+        "section": {
+          "id": "a"
+        }
+      },
+      "term": {
+        "start": "2026-08-24",
+        "end": "2026-12-11"
+      },
+      "closures": {
+        "2026-10-29": {
+          "name": "Concert",
+          "follows": "",
+          "after": 900
+        }
+      },
+      "date": "2026-10-29",
+      "expected": [
+        [
+          "TR",
+          540,
+          615
+        ]
+      ]
+    },
+    {
+      "name": "personal events ignore closures",
+      "item": {
+        "id": "b",
+        "meetings": [
+          {
+            "days": "M",
+            "start": 600,
+            "end": 660
+          }
+        ],
+        "block": {
+          "id": "b",
+          "days": "M",
+          "start": 600,
+          "end": 660
+        }
+      },
+      "term": {
+        "start": "2026-08-24",
+        "end": "2026-12-11"
+      },
+      "closures": {
+        "2026-09-07": {
+          "name": "Labor Day",
+          "follows": ""
+        }
+      },
+      "date": "2026-09-07",
+      "expected": [
+        [
+          "M",
+          600,
+          660
+        ]
+      ]
+    },
+    {
+      "name": "a one-time event happens on its date only",
+      "item": {
+        "id": "c",
+        "meetings": [
+          {
+            "days": "T",
+            "start": 600,
+            "end": 660
+          }
+        ],
+        "block": {
+          "id": "c",
+          "date": "2026-09-08",
+          "days": "T",
+          "start": 600,
+          "end": 660
+        }
+      },
+      "term": {},
+      "closures": {},
+      "date": "2026-09-15",
+      "expected": []
+    },
+    {
+      "name": "a dated item such as an exam sitting meets only on its date",
+      "item": {
+        "id": "a:exam:0",
+        "meetings": [
+          {
+            "days": "R",
+            "start": 1140,
+            "end": 1260
+          }
+        ],
+        "date": "2026-10-08",
+        "exam": {
+          "date": "2026-10-08"
+        }
+      },
+      "term": {
+        "start": "2026-08-24",
+        "end": "2026-12-11"
+      },
+      "closures": {},
+      "date": "2026-10-08",
+      "expected": [
+        [
+          "R",
+          1140,
+          1260
+        ]
+      ]
+    },
+    {
+      "name": "a dated item is silent on other days of the same weekday",
+      "item": {
+        "id": "a:exam:0",
+        "meetings": [
+          {
+            "days": "R",
+            "start": 1140,
+            "end": 1260
+          }
+        ],
+        "date": "2026-10-08",
+        "exam": {
+          "date": "2026-10-08"
+        }
+      },
+      "term": {
+        "start": "2026-08-24",
+        "end": "2026-12-11"
+      },
+      "closures": {},
+      "date": "2026-10-15",
+      "expected": []
+    },
+    {
+      "name": "a campus closure does not cancel a dated item without a section",
+      "item": {
+        "id": "a:exam:0",
+        "meetings": [
+          {
+            "days": "R",
+            "start": 1140,
+            "end": 1260
+          }
+        ],
+        "date": "2026-10-08",
+        "exam": {
+          "date": "2026-10-08"
+        }
+      },
+      "term": {
+        "start": "2026-08-24",
+        "end": "2026-12-11"
+      },
+      "closures": {
+        "2026-10-08": {
+          "name": "Reading Day",
+          "follows": ""
+        }
+      },
+      "date": "2026-10-08",
+      "expected": [
+        [
+          "R",
+          1140,
+          1260
+        ]
+      ]
+    }
+  ]
+}

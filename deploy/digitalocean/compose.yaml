@@ -1,0 +1,61 @@
+name: honorum-production
+x-app: &app
+  image: ${HONORUM_IMAGE:?Supply a tested release image}
+  restart: unless-stopped
+  env_file:
+    - path: /etc/honorum/app.env
+      format: raw
+  security_opt: [no-new-privileges:true]
+  cap_drop: [ALL]
+  stop_grace_period: 45s
+  mem_limit: 650m
+  logging:
+    driver: json-file
+    options: {max-size: 10m, max-file: '3'}
+  healthcheck:
+    test: [CMD, wget, -q, -O, /dev/null, 'http://127.0.0.1:8080/readyz']
+    interval: 30s
+    timeout: 5s
+    retries: 3
+    start_period: 60s
+services:
+  api:
+    <<: *app
+    cpus: 0.75
+    ports: ['127.0.0.1:8080:8080']
+    environment:
+      HONORUM_ROLE: api
+      HONORUM_DB_CONNECTIONS: '3'
+      HONORUM_DB_LOCK_CONNECTIONS: '1'
+      HONORUM_BASE_URL: https://honorum.app
+      HONORUM_TRUST_PROXY: '1'
+    volumes: ['api-data:/app/data', '/etc/honorum/postgres-ca.crt:/etc/honorum/postgres-ca.crt:ro']
+  worker:
+    <<: *app
+    cpus: 0.5
+    ports: ['127.0.0.1:8081:8080']
+    environment:
+      HONORUM_ROLE: worker
+      HONORUM_DB_CONNECTIONS: '3'
+      HONORUM_DB_LOCK_CONNECTIONS: '3'
+      HONORUM_CATALOG_OBJECTS: '1'
+      HONORUM_BASE_URL: https://honorum.app
+      HONORUM_TRUST_PROXY: '1'
+    volumes: ['worker-data:/app/data', '/etc/honorum/postgres-ca.crt:/etc/honorum/postgres-ca.crt:ro']
+  tunnel:
+    image: cloudflare/cloudflared:2026.10.0
+    restart: unless-stopped
+    network_mode: host
+    user: '0:0'
+    command: [tunnel, --no-autoupdate, --protocol, quic, run, --token-file, /run/secrets/tunnel_token]
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    mem_limit: 128m
+    cpus: 0.25
+    volumes: ['/etc/honorum/tunnel-token:/run/secrets/tunnel_token:ro']
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: '3'}
+volumes:
+  api-data:
+  worker-data:
