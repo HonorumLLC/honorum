@@ -12,16 +12,16 @@
     "perf": "node scripts/perf.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
+    "@playwright/test": "^1.64.1",
     "@sveltejs/vite-plugin-svelte": "^7.3.1",
-    "@types/node": "^26.6.3",
-    "fake-indexeddb": "^6.2.5",
-    "svelte": "^5.57.1",
-    "svelte-check": "^4.7.6",
+    "@types/node": "^26.6.5",
+    "fake-indexeddb": "^6.2.6",
+    "svelte": "^5.57.2",
+    "svelte-check": "^4.7.7",
     "typescript": "~6.0.3",
-    "vite": "^8.3.1"
+    "vite": "^8.3.4"
   },
   "dependencies": {
-    "libphonenumber-js": "^1.13.14"
+    "libphonenumber-js": "^1.13.15"
   }
 }
