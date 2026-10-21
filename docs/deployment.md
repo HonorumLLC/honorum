@@ -544,5 +544,10 @@ Local demos and tests use `scripts/postgres.sh`; see
 
 ## 10. iOS releases
 
-iOS builds are signed and uploaded from a Mac; see
-[releasing the iOS app](../apps/ios/README.md#release).
+The `iOS` workflow (`.github/workflows/ios.yml`) uploads app changes on
+`beta` to TestFlight for internal testers. Promoting them to `main` submits
+the same TestFlight build for App Store review, and the version releases once
+Apple approves it. Promote after beta's iOS run has finished; main fails if no
+TestFlight build matches its source. See
+[releasing the iOS app](../apps/ios/README.md#release) for versions, secrets,
+and releasing from a Mac.

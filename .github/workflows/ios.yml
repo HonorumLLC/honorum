@@ -1,0 +1,107 @@
+name: iOS
+
+# Ships the iOS app on two channels. App changes on beta build, sign, and
+# upload to TestFlight for internal testers. Promoting them to main submits
+# that same TestFlight build for App Store review; it goes live on approval.
+# The source ID ties the two together: it names the app and project trees a
+# build came from, so main submits only a binary testers have had.
+on:
+  push:
+    branches: [beta, main]
+    paths:
+      - 'apps/ios/Honorum/**'
+      - 'apps/ios/Honorum.xcodeproj/**'
+      - 'apps/ios/release-notes.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-${{ github.ref_name }}
+  cancel-in-progress: false
+
+env:
+  HONORUM_APPLE_TEAM_ID: HVVWYMF76J
+  HONORUM_ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+  HONORUM_ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+
+jobs:
+  testflight:
+    if: github.ref == 'refs/heads/beta'
+    # Xcode 27.1 (27A9275), the release maintainers build with locally.
+    runs-on: xcode-27
+    timeout-minutes: 90
+    environment: testflight
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.1.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Identify the iOS source
+        run: |
+          version=$(sed -n 's/.*MARKETING_VERSION = \([^;]*\);.*/\1/p' apps/ios/Honorum.xcodeproj/project.pbxproj | head -1)
+          source=$(git rev-parse HEAD:apps/ios/Honorum HEAD:apps/ios/Honorum.xcodeproj | git hash-object --stdin)
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          echo "SOURCE=$source" >> "$GITHUB_ENV"
+      - name: Install signing credentials
+        env:
+          KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+          P12: ${{ secrets.IOS_DISTRIBUTION_P12 }}
+          P12_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_P12_PASSWORD }}
+        run: |
+          export HONORUM_ASC_KEY_PATH="$RUNNER_TEMP/AuthKey.p8" KEYCHAIN="$RUNNER_TEMP/release.keychain-db"
+          echo "HONORUM_ASC_KEY_PATH=$HONORUM_ASC_KEY_PATH" >> "$GITHUB_ENV"
+          echo "KEYCHAIN=$KEYCHAIN" >> "$GITHUB_ENV"
+          printf '%s\n' "$KEY" > "$HONORUM_ASC_KEY_PATH"
+          password=$(openssl rand -hex 24)
+          security create-keychain -p "$password" "$KEYCHAIN"
+          security set-keychain-settings -lut 7200 "$KEYCHAIN"
+          security unlock-keychain -p "$password" "$KEYCHAIN"
+          printf '%s' "$P12" | base64 --decode > "$RUNNER_TEMP/distribution.p12"
+          security import "$RUNNER_TEMP/distribution.p12" -k "$KEYCHAIN" -P "$P12_PASSWORD" -T /usr/bin/codesign
+          rm "$RUNNER_TEMP/distribution.p12"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$password" "$KEYCHAIN" > /dev/null
+          security list-keychains -d user -s "$KEYCHAIN" login.keychain-db
+          serial=$(security find-certificate -c "Apple Distribution" -p "$KEYCHAIN" | openssl x509 -noout -serial | cut -d= -f2)
+          echo "HONORUM_PROVISIONING_PROFILE=$(node apps/ios/scripts/appstore.mjs profile "$serial")" >> "$GITHUB_ENV"
+      - name: Upload to TestFlight
+        run: |
+          build=$(node apps/ios/scripts/appstore.mjs next-build)
+          echo "BUILD=$build" >> "$GITHUB_ENV"
+          HONORUM_BUILD_NUMBER=$build ./apps/ios/scripts/release.sh upload
+      - name: Wait for processing and label the build
+        run: |
+          note="Beta $(git rev-parse --short HEAD): $(git log -1 --format=%s)"
+          node apps/ios/scripts/appstore.mjs label "$VERSION" "$BUILD" "$SOURCE" "$note"
+      - name: Remove signing credentials
+        if: always()
+        run: |
+          if [ -n "${KEYCHAIN:-}" ]; then security delete-keychain "$KEYCHAIN" || true; fi
+          rm -f "$RUNNER_TEMP/AuthKey.p8"
+
+  app-store:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: app-store
+      url: https://appstoreconnect.apple.com/apps
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - name: Submit the TestFlight build for review
+        env:
+          KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+        run: |
+          export HONORUM_ASC_KEY_PATH="$RUNNER_TEMP/AuthKey.p8"
+          trap 'rm -f "$HONORUM_ASC_KEY_PATH"' EXIT
+          printf '%s\n' "$KEY" > "$HONORUM_ASC_KEY_PATH"
+          version=$(sed -n 's/.*MARKETING_VERSION = \([^;]*\);.*/\1/p' apps/ios/Honorum.xcodeproj/project.pbxproj | head -1)
+          source=$(git rev-parse HEAD:apps/ios/Honorum HEAD:apps/ios/Honorum.xcodeproj | git hash-object --stdin)
+          node apps/ios/scripts/appstore.mjs submit "$version" "$source"

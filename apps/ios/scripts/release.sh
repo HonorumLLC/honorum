@@ -29,7 +29,17 @@ if [ "$mode" != verify ]; then
     echo "Set HONORUM_BUILD_NUMBER to a build number this App Store Connect version has not used." >&2
     exit 2
   fi
-  signing=("DEVELOPMENT_TEAM=$HONORUM_APPLE_TEAM_ID" CODE_SIGN_STYLE=Automatic -allowProvisioningUpdates)
+  if [ -n "${HONORUM_PROVISIONING_PROFILE:-}" ]; then
+    # CI has no Xcode account. It signs with an imported distribution identity
+    # and an App Store profile, and uploads with an App Store Connect API key.
+    signing=("DEVELOPMENT_TEAM=$HONORUM_APPLE_TEAM_ID" CODE_SIGN_STYLE=Manual
+      "CODE_SIGN_IDENTITY=Apple Distribution" "PROVISIONING_PROFILE_SPECIFIER=$HONORUM_PROVISIONING_PROFILE")
+    export_auth=(-authenticationKeyPath "$HONORUM_ASC_KEY_PATH"
+      -authenticationKeyID "$HONORUM_ASC_KEY_ID" -authenticationKeyIssuerID "$HONORUM_ASC_ISSUER_ID")
+  else
+    signing=("DEVELOPMENT_TEAM=$HONORUM_APPLE_TEAM_ID" CODE_SIGN_STYLE=Automatic -allowProvisioningUpdates)
+    export_auth=()
+  fi
 fi
 
 mkdir -p artifacts/ios
@@ -60,24 +70,29 @@ if [ "$mode" = archive ]; then
   exit 0
 fi
 
-# Distribution signing happens here, not in the archive: automatic signing
-# archives with the development identity and re-signs on export.
-python3 - "$release_dir/ExportOptions.plist" "$HONORUM_APPLE_TEAM_ID" <<'PY'
+# Locally, distribution signing happens here, not in the archive: automatic
+# signing archives with the development identity and re-signs on export.
+# CI archives with the distribution identity and exports with its profile.
+python3 - "$release_dir/ExportOptions.plist" "$HONORUM_APPLE_TEAM_ID" "${HONORUM_PROVISIONING_PROFILE:-}" <<'PY'
 import plistlib, sys
+options = {
+    "method": "app-store-connect",
+    "destination": "upload",
+    "teamID": sys.argv[2],
+    "signingStyle": "automatic",
+    "manageAppVersionAndBuildNumber": False,
+    "uploadSymbols": True,
+    "stripSwiftSymbols": True,
+}
+if sys.argv[3]:
+    options.update(signingStyle="manual", signingCertificate="Apple Distribution",
+                   provisioningProfiles={"app.honorum.ios": sys.argv[3]})
 with open(sys.argv[1], "wb") as output:
-    plistlib.dump({
-        "method": "app-store-connect",
-        "destination": "upload",
-        "teamID": sys.argv[2],
-        "signingStyle": "automatic",
-        "manageAppVersionAndBuildNumber": False,
-        "uploadSymbols": True,
-        "stripSwiftSymbols": True,
-    }, output)
+    plistlib.dump(options, output)
 PY
 if ! xcodebuild -exportArchive -archivePath "$archive" \
   -exportOptionsPlist "$release_dir/ExportOptions.plist" \
-  -exportPath "$release_dir/Export" -allowProvisioningUpdates \
+  -exportPath "$release_dir/Export" -allowProvisioningUpdates ${export_auth[@]+"${export_auth[@]}"} \
   > "$release_dir/upload.log" 2>&1; then
   tail -60 "$release_dir/upload.log" >&2
   exit 1
