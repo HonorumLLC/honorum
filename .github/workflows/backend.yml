@@ -1,0 +1,119 @@
+name: Backend
+
+# Releases the Rust API and worker to the production droplet when backend
+# code reaches main, or by hand. Builds the release bundle, admits this
+# runner to SSH only while it installs, and waits until production reports
+# the new version. Run by hand with rollback to reinstall the previous
+# release instead.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'crates/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'config/**'
+      - 'contracts/**'
+      - 'deploy/digitalocean/**'
+  workflow_dispatch:
+    inputs:
+      rollback:
+        description: Reinstall the previous release instead of building main
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-production
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    environment:
+      name: production
+      url: https://honorum.app/status
+    env:
+      COMMIT: ${{ github.sha }}
+      ROLLBACK: ${{ inputs.rollback == true }}
+      # The provisioning script's name for the droplet, its tag, and its firewall.
+      RESOURCE: honorum-production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: env.ROLLBACK != 'true'
+        with:
+          persist-credentials: false
+      - name: Build the release bundle
+        if: env.ROLLBACK != 'true'
+        run: |
+          bundle=$(CONTAINER_TOOL=docker deploy/digitalocean/build-release.sh | tail -1)
+          echo "BUNDLE=$bundle" >> "$GITHUB_ENV"
+      - uses: digitalocean/action-doctl@3cb3953159719656269e044e0e24ca16dd2a690f # v2.5.2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+      - name: Admit this runner to SSH
+        id: admit
+        run: |
+          fail() { echo "::error::$1"; exit 1; }
+          address=$(curl -fsS --max-time 10 https://api.ipify.org)
+          [[ "$address" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || fail "Could not read this runner's IPv4 address"
+          firewall=$(doctl compute firewall list --format ID,Name --no-header | awk -v name="$RESOURCE" '$2 == name { print $1 }')
+          host=$(doctl compute droplet list --tag-name "$RESOURCE" --format PublicIPv4 --no-header)
+          [ "$(echo "$firewall" | wc -w)" = 1 ] || fail "Expected one $RESOURCE firewall"
+          [ "$(echo "$host" | wc -w)" = 1 ] || fail "Expected one $RESOURCE droplet"
+          # Recorded before the rule exists, so the cleanup step always finds it.
+          { echo "address=$address"; echo "firewall=$firewall"; echo "host=$host"; } >> "$GITHUB_OUTPUT"
+          doctl compute firewall add-rules "$firewall" --inbound-rules "protocol:tcp,ports:22,address:$address/32"
+      - name: Install the release
+        env:
+          HOST: ${{ steps.admit.outputs.host }}
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          options=(-i ~/.ssh/deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=15)
+          target="honorum-admin@$HOST"
+          # A new firewall rule takes a few seconds to apply.
+          for _ in {1..12}; do ssh "${options[@]}" "$target" true && break; sleep 5; done
+          if [ "$ROLLBACK" = true ]; then
+            # The installer records the release it replaced as previous.
+            previous=$(ssh "${options[@]}" "$target" 'cat /opt/honorum/previous/version')
+            [[ "$previous" =~ ^[a-f0-9]{40}$ ]] || { echo "::error::No previous release to roll back to"; exit 1; }
+            echo "COMMIT=$previous" >> "$GITHUB_ENV"
+            ssh "${options[@]}" "$target" 'cd /opt/honorum/previous && sudo ./install-release.sh'
+            exit 0
+          fi
+          scp "${options[@]}" "$BUNDLE" "$target:/tmp/honorum-$COMMIT.tar.gz"
+          ssh "${options[@]}" "$target" sudo bash -euo pipefail -s "$COMMIT" <<'REMOTE'
+          release=/opt/honorum/releases/$1
+          mkdir -p "$release"
+          tar -xzf "/tmp/honorum-$1.tar.gz" -C "$release"
+          rm "/tmp/honorum-$1.tar.gz"
+          cd "$release"
+          ./install-release.sh
+          REMOTE
+      - name: Close SSH
+        if: always() && steps.admit.outputs.firewall != ''
+        env:
+          ADDRESS: ${{ steps.admit.outputs.address }}
+          FIREWALL: ${{ steps.admit.outputs.firewall }}
+        run: doctl compute firewall remove-rules "$FIREWALL" --inbound-rules "protocol:tcp,ports:22,address:$ADDRESS/32"
+      - name: Verify the serving version
+        run: |
+          for _ in {1..60}; do
+            version=$(curl -fsS -H 'Cache-Control: no-cache' https://honorum.app/api/config | jq -r .version || true)
+            if [ "$version" = "$COMMIT" ] && curl -fsS -o /dev/null https://honorum.app/readyz; then
+              echo "Backend $COMMIT is serving"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::Production still reports backend ${version:-unknown}, not $COMMIT. Run this workflow with rollback to restore the previous release."
+          exit 1
