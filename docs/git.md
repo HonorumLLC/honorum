@@ -86,17 +86,30 @@ git config --local fetch.prune true
 git config --local push.default simple
 ```
 
-Check your remotes with `git remote -v` before a push. External contributors
-push to a fork. Keep credentials out of remote URLs, files, and commits.
+Check your remotes with `git remote -v` before a push. Keep credentials out of
+remote URLs, files, and commits.
 
 ## 6. Maintainer settings
 
-- Require a pull request for `main` and `beta`.
+The `Protect main and beta` ruleset holds the branch rules:
+
+- Require a pull request for `main` and `beta`. Repository admins may bypass
+  its requirements only when merging a pull request, never by pushing.
 - Block branch deletion and force pushes on both branches.
-- Require resolved review conversations before merge.
-- Allow squash merges and delete merged task branches automatically.
+- Require linear history and resolved review conversations before merge.
+- Allow squash merges only and delete merged task branches automatically.
 - Require checks only when an active workflow reports them.
+
+Repository security settings:
+
 - Keep the default Actions token read-only.
+- Allow only GitHub-owned actions and the Cloudflare and DigitalOcean deploy
+  actions, each pinned to a full commit SHA.
+- Require approval before workflows run for any outside contributor.
+- Limit the `production` environment, which holds the backend deploy key and
+  DigitalOcean token, to `main`.
+- Keep secret scanning with push protection, Dependabot alerts and security
+  updates, CodeQL default setup, and private vulnerability reporting on.
 - Keep [CODEOWNERS](../.github/CODEOWNERS) current as maintainers change.
 - Keep production credentials in the deployment environment.
 

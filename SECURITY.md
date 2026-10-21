@@ -2,8 +2,10 @@
 
 ## Report a security defect
 
-Send a private report to [support@honorum.app](mailto:support@honorum.app).
-Use the subject `Honorum security report`.
+Report privately through GitHub: open the repository's **Security** tab and
+choose **Report a vulnerability**. You can also email
+[support@honorum.app](mailto:support@honorum.app) with the subject
+`Honorum security report`.
 Do not put exploit details or private data in a public issue.
 
 Include the affected component, commit or version, reproduction steps,
