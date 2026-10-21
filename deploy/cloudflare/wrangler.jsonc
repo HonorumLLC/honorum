@@ -23,5 +23,25 @@
     // The release workflow stamps the edge commit here.
     "VERSION": "dev",
     "MAINTENANCE": "0"
+  },
+  // beta.honorum.app: the beta branch's frontend on its own Worker, sharing
+  // production's backend, catalog bucket and tunnels. Bindings and vars do
+  // not inherit, so each is repeated here.
+  "env": {
+    "beta": {
+      "name": "honorum-beta",
+      "workers_dev": false,
+      "routes": [{ "pattern": "beta.honorum.app", "custom_domain": true }],
+      "r2_buckets": [{ "binding": "CATALOG", "bucket_name": "classradar-db" }],
+      "vpc_services": [
+        { "binding": "DIGITALOCEAN_API", "service_id": "01a10e36-e5f6-7962-9429-0107e552b3d5" },
+        { "binding": "DIGITALOCEAN_WORKER", "service_id": "01a10e37-604d-7a32-8941-f4ccbe459b24" }
+      ],
+      "triggers": { "crons": [] },
+      "vars": {
+        "VERSION": "dev",
+        "MAINTENANCE": "0"
+      }
+    }
   }
 }

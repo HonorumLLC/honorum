@@ -251,6 +251,30 @@ npx wrangler deploy --config wrangler.release.jsonc
 node scripts/verify-release.mjs "$(git rev-parse HEAD)"
 ```
 
+### 4.3 Beta frontend
+
+The `Deploy beta` workflow (`.github/workflows/deploy-beta.yml`) publishes the
+`beta` branch's frontend to `beta.honorum.app` every day at 09:00 UTC, and can
+also be run by hand. It deploys the `beta` environment in
+`deploy/cloudflare/wrangler.jsonc`: a separate `honorum-beta` Worker that
+shares production's backend, catalog bucket, and tunnels, so only the
+frontend differs. The backend deploys from `main` alone (§4.1). GitHub reads
+the schedule from `main` and the Worker configuration from `beta`, so a
+change to either belongs on both branches.
+
+It runs no tests and uses no GitHub environment, so it reads
+`CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` from repository secrets.
+Sign-in cookies belong to one host, so beta needs its own sign-in. Google
+Calendar's callback returns to `HONORUM_BASE_URL`, `honorum.app`.
+
+A manual beta release, from `deploy/cloudflare/` on `beta`:
+
+```sh
+node scripts/release-config.mjs "$(git rev-parse HEAD)"
+npx wrangler deploy --config wrangler.release.jsonc --env beta
+node scripts/verify-release.mjs "$(git rev-parse HEAD)" https://beta.honorum.app
+```
+
 ## 5. Cloudflare
 
 [`wrangler.jsonc`](../deploy/cloudflare/wrangler.jsonc) configures the
