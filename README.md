@@ -15,7 +15,6 @@
 <p align="center">
   <a href="https://honorum.app">Open Honorum</a> ·
   <a href="#run-the-demo">Run the demo</a> ·
-  <a href="CONTRIBUTING.md">Contribute</a> ·
   <a href="docs/architecture.md">Architecture</a>
 </p>
 
@@ -72,7 +71,7 @@ make check
 
 This runs Rust, web, edge Worker, and browser checks.
 Run `make test-ios` separately on macOS with Xcode.
-The [contributor guide](CONTRIBUTING.md) covers forks, task branches, tests, and pull requests.
+Honorum is not accepting outside contributions; see [Contributing](CONTRIBUTING.md) for bug and security reports.
 
 ## Repository map
 
