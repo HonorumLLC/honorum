@@ -201,6 +201,26 @@ tested commit on `main`.
 
 ### 4.1 Backend
 
+The GitHub `Backend` workflow (`.github/workflows/backend.yml`) releases the
+backend when a push to `main` changes `crates/`, `Cargo.toml`, `Cargo.lock`,
+`config/`, `contracts/`, or `deploy/digitalocean/`, and can be run by hand
+from `main`. It builds the bundle below with Docker, adds a firewall rule
+admitting only its runner's address to SSH, installs the bundle as
+`honorum-admin`, removes the rule whether or not the install succeeded, and
+waits until `https://honorum.app/api/config` reports the commit and
+`/readyz` answers. Run it by hand with **rollback** to reinstall the release
+recorded in `/opt/honorum/previous`. Releases never run concurrently.
+
+Its `production` environment needs:
+
+| Secret | Value |
+| --- | --- |
+| `DIGITALOCEAN_TOKEN` | Custom-scoped token: `firewall:read`, `firewall:update`, `droplet:read` |
+| `DEPLOY_SSH_KEY` | Private key whose public half is in `honorum-admin`'s `authorized_keys` |
+| `DEPLOY_KNOWN_HOSTS` | The droplet's `known_hosts` line, checked against its console fingerprint |
+
+A manual release follows the same steps:
+
 ```sh
 deploy/digitalocean/build-release.sh
 ```
