@@ -100,7 +100,7 @@ test('events keep notes and take a class or a color of their own', async ({ page
 test('a setting puts tasks on the hours at their due time', async ({ page }) => {
   await ready(page);
   await event(page, 'Study'); // the week grid draws once the schedule has something on it
-  await page.getByRole('button', { name: 'Add task', exact: true }).click();
+  await page.getByRole('button', { name: /^Add task$/i }).click();
   const dialog = page.getByRole('dialog', { name: 'Add Task' });
   await dialog.getByLabel('Title', { exact: true }).fill('Problem set 1');
   const today = new Date();
@@ -136,7 +136,7 @@ test('tasks due throughout this week appear in the list without opening a fold',
   await ready(page);
   const tasks = page.locator('.tasks');
   for (const [title, date] of [['Friday reading', '2026-10-09'], ['Saturday quiz', '2026-10-10'], ['Sunday response', '2026-10-11'], ['Next Tuesday paper', '2026-10-13']]) {
-    await page.getByRole('button', { name: 'Add task', exact: true }).click();
+    await page.getByRole('button', { name: /^Add task$/i }).click();
     const dialog = page.getByRole('dialog', { name: 'Add Task' });
     await dialog.getByLabel('Title', { exact: true }).fill(title);
     await dialog.getByLabel('Due date', { exact: true }).fill(date);
@@ -165,7 +165,7 @@ test('the progress card counts today and this week, and a guest streak offers si
   await ready(page);
   const progress = page.getByRole('region', { name: 'Progress', exact: true });
   await expect(progress).toHaveCount(0); // the card waits for a first task
-  await page.getByRole('button', { name: 'Add task', exact: true }).click();
+  await page.getByRole('button', { name: /^Add task$/i }).click();
   const dialog = page.getByRole('dialog', { name: 'Add Task' });
   await dialog.getByLabel('Title', { exact: true }).fill('Reading response');
   const today = new Date();

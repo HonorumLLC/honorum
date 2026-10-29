@@ -125,10 +125,13 @@
 
 <style>
   /* A row's own inset makes the space between the rings and its dot match
-     the card's. */
+     the card's. The rings take the room the rows leave, from 120px down to
+     84px: the rows keep their full width up to what the smallest rings
+     leave, so they wrap only once the rings can shrink no more. The
+     middle's type scales with the rings. */
   .rings { display: flex; align-items: center; gap: 4px; }
-  .dial { position: relative; flex: none; }
-  svg { display: block; overflow: visible; }
+  .dial { position: relative; flex: 0 1 120px; min-width: 84px; container-type: inline-size; }
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
   .ring { cursor: pointer; transform-box: view-box; transform-origin: center; }
   .ring circle { fill: none; transform: rotate(-90deg); transform-origin: center; }
   .track { stroke: color-mix(in srgb, var(--c) var(--ring-mix), var(--card)); }
@@ -139,11 +142,11 @@
   .ripple { stroke-width: 2.5; vector-effect: non-scaling-stroke; transform-box: view-box; transform-origin: center; }
   .tick { stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
   .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
-  .center-label { font-size: 11px; font-weight: 600; line-height: 1.3; }
-  .center-count { display: flex; align-items: baseline; gap: .25em; font-family: var(--display); font-size: 20px; line-height: 1.15; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  /* The rows' highlight reaches into the card's inset so their text lines up
-     with the heading's edge. */
-  .rows { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; margin-right: -8px; }
+  .center-label { font-size: calc(11cqi * 100 / 112); font-weight: 600; line-height: 1.3; }
+  .center-count { display: flex; align-items: baseline; gap: .25em; font-family: var(--display); font-size: calc(20cqi * 100 / 112); line-height: 1.15; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  /* The rows' highlight reaches 8px into the card's inset so their text
+     lines up with the heading's edge. */
+  .rows { flex: 1 0 auto; max-width: calc(100% - 84px - 4px + 8px); display: flex; flex-direction: column; gap: 2px; margin-right: -8px; }
   .rl { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0 10px; min-height: 36px; padding: 2px 8px; border: 0; border-radius: 8px; background: none; color: inherit; text-align: left; }
   @media (hover: hover) { .rl:hover { background: var(--hover); } }
   .rl.on { background: var(--active); }
@@ -155,12 +158,6 @@
   .lb { font-size: .86rem; font-weight: 600; }
   .ct { font-size: .76rem; color: var(--muted); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 
-  /* Leave room for the full labels and counts beside the rings in a narrow pane. */
-  @container (max-width: 276px) {
-    .dial svg { width: 80px; height: 80px; }
-    .center-label { font-size: 9px; }
-    .center-count { font-size: 15px; }
-  }
 
   @media (prefers-reduced-motion: no-preference) {
     svg { animation: focus-in .4s var(--ease-open) backwards; }

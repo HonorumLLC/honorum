@@ -191,6 +191,21 @@
 {/snippet}
 
 <section class="tasks" class:framed>
+  {#if !app.tasks.length && !connected}
+    <!-- Nothing yet and nowhere to bring tasks from: the week's own empty
+         state, in the middle of the pane. -->
+    <div class="blank" class:pane-scroll={framed}>
+      <div class="status">
+        <div class="glyph"><Icon name="tasks" /></div>
+        <h2>No Tasks</h2>
+        <div class="actions">
+          <button class="btn pill suggested" onclick={() => (app.connect = PROVIDER_NAMES[lmsOf()?.kind] ? lmsOf().kind : 'pick')}>{lmsName ? `Connect ${lmsName}` : 'Import Tasks'}</button>
+          <button class="btn pill" onclick={() => (app.taskEditing = 'new')}>Add Task</button>
+        </div>
+      </div>
+      {@render children?.()}
+    </div>
+  {:else}
   <div class="head" class:pane-head={framed}>
     <Stats />
     <div class="toolbar" bind:this={bar}>
@@ -206,11 +221,7 @@
   </div>
   <div class:pane-scroll={framed}>
     {#if !app.tasks.length}
-      {#if connected}
-        {#if !syncing && !syncError}<p class="hint">Nothing due</p>{/if}
-      {:else}
-        <p class="hint">Add tasks by hand, or <button class="btn link" onclick={() => (app.connect = PROVIDER_NAMES[lmsOf()?.kind] ? lmsOf().kind : 'pick')}>connect {lmsName || 'Canvas or a calendar'}</button></p>
-      {/if}
+      {#if !syncing && !syncError}<p class="hint">Nothing due</p>{/if}
     {/if}
 
     {#if past.length}
@@ -285,6 +296,7 @@
     </div>
     {@render children?.()}
   </div>
+  {/if}
 </section>
 
 <style>
@@ -293,6 +305,9 @@
   .framed .pane-head { padding-bottom: 10px; }
   .framed .toolbar { margin-bottom: 0; }
   .framed .pane-scroll { padding-top: 0; }
+  .blank { display: flex; flex-direction: column; }
+  .framed .blank { padding-top: var(--pad); }
+  .blank .status { flex: 1; margin: 0; }
   .toolbar { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
   /* On a phone the page scrolls as a whole, and the toolbar stays at its
      top on the page's own background, over its 12px padding. At rest its

@@ -275,6 +275,9 @@
     .foot .btn { width: auto; height: auto; min-height: 36px; font-size: inherit; }
     .foot .suggested { min-width: 8.5rem; }
     .foot .quiet { margin-right: auto; background: var(--hover); color: var(--text); font-size: inherit; }
+    /* No scrollbar: the list keeps the search's edges, and the footer's
+       hairline shows there is more below. */
+    .body { scrollbar-width: none; }
   }
   /* A phone on its side scrolls the whole frame rather than squeeze the content. */
   @media (max-height: 480px) {
