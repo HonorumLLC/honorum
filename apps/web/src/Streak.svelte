@@ -87,10 +87,13 @@
 </div>
 
 <style>
-  /* One height in every state: the Sign In pill's. The week and the pill
-     end where the percentages' ink does, inside the % sign's side bearing
-     (42 of Poppins's 1000 units). */
-  .streak { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 24px; margin-right: calc(1.08rem * .042); }
+  /* One height in every state: the Sign In pill's. The heading is the
+     card's header, a hairline across the card from the rings below, so it
+     need not share their columns. The week and the pill end where the
+     percentages' ink does, inside the % sign's side bearing (42 of
+     Poppins's 1000 units). */
+  .streak { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 24px;
+    margin: 0 calc(-1 * var(--pad)); padding: 0 calc(var(--pad) + 1.08rem * .042) var(--pad) var(--pad); border-bottom: 1px solid var(--line); }
   .line { flex: 1; min-width: 0; display: flex; align-items: center; gap: 5px; }
   /* The flame's widest point (5.5 of its 24 units in) meets the rings'
      outer edge, and its ink's middle (12.35 down) the line's. */

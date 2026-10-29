@@ -366,12 +366,14 @@ Web Tasks starts with a Progress card once a task exists. In the side pane it
 stays in view above the task search while the list scrolls.
 On iOS, the rings appear on Home instead. On
 the web the card is always open, with one even inset around its heading and
-rings. The streak is the heading. Below it, three nested rings each have a row
-beside them: Today outside, This Week, and This Term inside.
+rings. The streak is the heading, set off from the rings by a hairline across
+the card. Below it, three nested rings each have a row beside them: Today
+outside, This Week, and This Term inside.
 
 On the web each row leads with its label and count and ends with its
-percentage at the card's edge. In narrow web cards, the rings shrink to leave
-room for the labels and counts; long counts wrap.
+percentage at the card's edge. The rings take the room the rows leave, between
+84 and 120 pixels, so they scale smoothly with the card. Long counts wrap only
+once the rings are at their smallest.
 Today holds tasks due today and This Week tasks due in the calendar week,
 which starts on Monday or
 Sunday like the calendar. Both also hold overdue tasks that are still open or
@@ -513,7 +515,7 @@ For institution data requests, use the installation's configured `contact` addre
 ## 14. Web interface
 
 The desktop app shows a weekly calendar with a side pane for tasks or item details.
-The header holds Add Event, week controls, Edit Classes, Tasks, and the main menu.
+The header holds the week controls at the start and its actions at the end: Add Event, Edit Classes, Tasks, and the main menu.
 The menu holds share actions, Settings, and Keyboard Shortcuts.
 Add Event uses the selected day as its default.
 
@@ -589,6 +591,7 @@ This device setting does not change the task or its deadline.
 Both forms open the task editor.
 
 The task pane starts with [Progress](#11-progress-rings).
+With no tasks and no connected source, it shows No Tasks in its middle with Connect Canvas (or Import Tasks) and Add Task.
 The list shows overdue tasks and the rest of this week, and nothing past the week's end.
 This week uses the calendar's Monday or Sunday start.
 When nothing is due this week, the list says so.

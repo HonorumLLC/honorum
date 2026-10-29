@@ -1,8 +1,8 @@
 <script>
   // The whole window. Most of the year it is a planner: a header bar with
-  // the brand, Add Event and week navigation at the start, the week in the
-  // middle, and Edit Classes, the tasks pane's toggle and the primary menu
-  // at the end, above the week grid and the side pane on the right with
+  // the brand and week navigation at the start, the week in the middle, and
+  // every action at the end (Add Event, Edit Classes, the tasks pane's
+  // toggle and the primary menu), above the week grid and the side pane on the right with
   // every task. Editing classes is a mode of the same window: a pane with
   // the search entry and its results slides in on the left, the schedule
   // menu and Done take the end, and the side pane stays as it was. Phones switch between Week, Classes and Tasks with
@@ -226,10 +226,7 @@
         <svg class="wm" viewBox={WORDMARK.viewBox} aria-hidden="true"><path d={WORDMARK.d} fill="currentColor" /></svg>
       </div>
       {#if !narrow && sched && !editing}
-        <div class="tools" in:appear>
-          <div class="group"><button class="btn flat" onclick={() => (app.editing = 'new')} title="Add Event" aria-label="Add Event"><Icon name="plus" /><span class="lbl">Event</span></button></div>
-          {@render nav()}
-        </div>
+        <div class="tools" in:appear>{@render nav()}</div>
       {/if}
     </div>
     {#key editing}
@@ -248,6 +245,7 @@
         </div>
       {:else if !narrow && sched}
         <div class="tools" in:appear>
+          <div class="group"><button class="btn flat" onclick={() => (app.editing = 'new')} title="Add Event" aria-label="Add Event"><Icon name="plus" /><span class="lbl">Event</span></button></div>
           <!-- Reaching for the button starts reading the saved catalog. -->
           <button class="btn flat icon" onpointerenter={ensureCatalog} onfocus={ensureCatalog} onclick={() => openClasses()} title="Edit Classes (/)" aria-label="Edit Classes"><Icon name="edit" /></button>
           <button class="btn flat" class:on={app.pane && !app.selected} aria-pressed={app.pane && !app.selected} onclick={() => { if (app.selected) { app.selected = ''; setPane(true); } else setPane(!app.pane); }} title="Show or Hide Tasks (F9)"><Icon name="pane" /><span>Tasks</span></button>
@@ -375,8 +373,8 @@
 <style>
   /* The window fills #app (see app.css) rather than 100vh, which on phones runs under the browser's toolbar. */
   .window { display: flex; flex-direction: column; height: 100%; padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left); }
-  /* Header bar: three alignment points; 6px inside a group, 12px between
-     groups. The start and end keep their controls, so when the window is too
+  /* Header bar: three alignment points; navigation at the start, actions
+     at the end, 6px apart; 12px between groups. The start and end keep their controls, so when the window is too
      narrow for a centered title the title slides toward the shorter side. */
   .headerbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; flex: none; min-height: 48px; padding: 0 6px; box-shadow: inset 0 -1px var(--line); }
   .start, .end { display: flex; align-items: center; gap: 12px; min-width: 0; }
@@ -385,7 +383,7 @@
   .tools { display: flex; align-items: center; gap: 12px; min-width: 0; }
   .end .tools { gap: 6px; }
   .titlebox { display: flex; flex-direction: column; align-items: center; min-width: 0; padding: 4px 0; }
-  .brand { display: flex; align-items: center; gap: 8px; padding: 0 10px 0 6px; color: var(--text); }
+  .brand { display: flex; align-items: center; gap: 8px; padding: 0 4px 0 6px; color: var(--text); }
   .brand .mark { display: block; width: 23px; height: 23px; }
   .status .mark.big { width: 72px; height: 72px; }
   .brand .wm { display: block; height: 12px; width: auto; }
