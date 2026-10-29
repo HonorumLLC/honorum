@@ -105,7 +105,7 @@
       {#key open}
         <div class="center" aria-hidden="true">
           <span class="center-label" style:color="var(--ring-{color})">{label}</span>
-          <span class="center-count">{#if c.total}<Count value={c.done} delay={100} /> / {c.total}{:else}—{/if}</span>
+          <span class="center-count">{#if c.total}<Count value={c.done} delay={100} hold /> / {c.total}{:else}—{/if}</span>
         </div>
       {/key}
     {/if}
@@ -116,7 +116,7 @@
       <button type="button" class="rl" class:on={open === key} class:dim={open && open !== key} style:--i={i} aria-pressed={open === key} onclick={() => toggle(key)}
         aria-label="{label}: {c.total ? `${c.done} of ${c.total} done` : 'nothing due'}">
         <span class="dot" style:background="var(--ring-{color})"></span>
-        <span class="st"><span class="lb">{label}</span><span class="ct">{#if c.total}<Count value={c.done} delay={delayOf(i)} /> of {c.total}{:else}Nothing due{/if}</span></span>
+        <span class="st"><span class="lb">{label}</span><span class="ct">{#if c.total}<Count value={c.done} delay={delayOf(i)} hold /> of {c.total}{:else}Nothing due{/if}</span></span>
         <span class="pc"><Count value={percent(c)} delay={delayOf(i)} />%</span>
       </button>
     {/each}

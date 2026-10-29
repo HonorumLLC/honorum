@@ -362,12 +362,12 @@ checks, request limits, and client requirements are in
 
 ## 11. Progress rings
 
-Web Tasks starts with a Progress card once a task exists.
+Web Tasks starts with a Progress card once a task exists. In the side pane it
+stays in view above the task search while the list scrolls.
 On iOS, the rings appear on Home instead. On
-the web the card is always open, on the page last shown in the session, with
-one even inset around its heading and page. The card's Rings page nests three
-rings, each with a row beside them: Today outside, This Week, and This Term
-inside.
+the web the card is always open, with one even inset around its heading and
+rings. The streak is the heading. Below it, three nested rings each have a row
+beside them: Today outside, This Week, and This Term inside.
 
 On the web each row leads with its label and count and ends with its
 percentage at the card's edge. In narrow web cards, the rings shrink to leave
@@ -394,8 +394,16 @@ On the web, light mode uses dusty red for Today, pale apricot for This Week,
 and soft blue for This Term. The landing
 page's preview uses the same palette. Dark mode uses coral, amber, and slate blue.
 
-The Streak page shows the current streak, best streak, and four weeks of dots.
-Overdue tasks make the count red. Guests see Sign In.
+The heading reads like "30 day streak" in the card's title type, with this
+week's days as dots at the card's edge in the calendar's week order and today
+outlined. While tasks are overdue, today's dot turns red; the heading does not
+change. The heading's tooltip gives the best streak, today's dot's tooltip
+gives the overdue count, and screen readers hear both. Guests see Keep a
+Streak and Sign In; an account whose streak has not arrived yet sees Connect
+to update your streak. Every state has the same height, so the rings never
+move. The flame, the heading's capitals, and the dots share one center line.
+The flame's widest point meets the rings' outer edge, and the last dot or Sign
+In ends where the percentages' ink does.
 On the web, clean-day dots and today's outline use apricot `#eba363` in light
 mode.
 
@@ -408,14 +416,16 @@ week, and the term record lives in the app's defaults. A closed ring draws a
 check. Account's profile card shows the streak page: the same count, best,
 overdue count, and four-week dots for a signed-in account.
 
-Page animations settle within about one second.
+Card animations settle within about one second.
 Ring arcs appear from the outer ring inward. Streak days appear in date order.
-Numbers count up to their values.
+Numbers count up to their values. Text after a count holds still while it
+runs; when the final value is wider or narrower, the text glides there on the
+count's curve.
 
 A new streak day moves
-today's ring to the next dot as the count goes up. On the web, the previous page fades over the new page.
-Both pages have the same height, so the card stays in place. Reduce Motion shows the final state
-at once.
+today's ring to the next dot as the count goes up. A new week's days arrive
+afresh. Falling behind turns today's dot red for two slow breaths. Reduce
+Motion shows the final state at once.
 
 ## 12. Streaks
 
@@ -436,8 +446,10 @@ account's first streak check never count against it.
 
 Guests have no streak.
 
-Web Progress and the iOS Account profile show the current and best streak.
-They also show four weeks of days and the current overdue task count. Web Settings shows the current and longest streak.
+The iOS Account profile shows the current and best streak, the current overdue
+task count, and four weeks of days. Web Progress shows the current streak and
+this week's days, with the best streak and the overdue count in its tooltips.
+Web Settings shows the current and longest streak.
 iOS shows the current streak beside Home's Account button in one glass capsule.
 The capsule opens Account, which contains the full streak page. Every streak flame is the web's
 drawing: a gradient from a red base to an amber tip with a lighter core. On iOS
@@ -506,8 +518,20 @@ The menu holds share actions, Settings, and Keyboard Shortcuts.
 Add Event uses the selected day as its default.
 
 The calendar and panes have separate scroll areas.
-Native scrollbars reserve space at the scrollbar edge.
+A side pane keeps its head in place (Progress and the task search, or the
+class search) and scrolls only the list beneath it. The list holds to the
+pane's width and its thin scrollbar draws in the right inset, so nothing
+reflows as a scrollbar comes and goes and no room is kept for one that never
+shows.
 Controls and cards stay within the available width.
+
+Item details in the side pane use as few words as possible and no subtitles.
+A back arrow returns to Tasks; then come the item's color dot and code, and one
+line for when and where. A class's seats, with a bell for the seat alert, its
+color, and a Details fold sit in one box. Details holds the title,
+instructors, waitlist, exams, credits, dates, CRN, terms, and description.
+Skip (the clicked day), Edit, and Remove end the pane. An exam offers Show
+Class and Hide; a Google event opens in Google Calendar.
 
 The app uses warm neutral surfaces, a brown accent, Poppins display text,
 and the system font for body text.
@@ -565,20 +589,26 @@ This device setting does not change the task or its deadline.
 Both forms open the task editor.
 
 The task pane starts with [Progress](#11-progress-rings).
-The list shows overdue tasks, this week's tasks, and at least today through three days ahead.
-It expands to the first three tasks when that range has fewer.
+The list shows overdue tasks and the rest of this week, and nothing past the week's end.
 This week uses the calendar's Monday or Sunday start.
+When nothing is due this week, the list says so.
 
-Coming Up folds the remaining Next Week, Later, and No Due Date groups.
-A partially listed next week uses Rest of Next Week.
-Each fold shows its count. Next Week also shows daily load marks in class colors.
+Coming Up holds Next Week, Later, and No Due Date as one card each, always whole.
+Each card shows its count. Next Week also shows daily load marks in class colors.
 
 Later and No Due Date show a bar split by class and a count per class.
 A fold expands in place and closes when the list leaves the screen.
 Search shows all matching tasks.
 
 Tasks use daily headings through next week, then weekly headings.
-Overdue comes first in red. No Due Date comes last.
+Overdue comes first in red and holds only open tasks. No Due Date comes last.
+
+Show Completed keeps completed tasks under their due day.
+Those due before today sit above the list, under daily headings back to the start of last week and weekly headings before that.
+Turning it on or off keeps today where it is on screen, so earlier days are a scroll back.
+A list that opens with them shown opens at today.
+On a phone the toolbar stays at the top of the page as it scrolls.
+
 Rows show the class-colored tick, title, and time, except at 11:59 pm.
 
 Weekly groups add the weekday. Overdue rows add the date.

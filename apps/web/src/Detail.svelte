@@ -6,9 +6,10 @@
 </script>
 
 <script>
-  // The selected section, exam sitting or personal event: what, when,
-  // where, who, seats, the seat alert switch, its color, notes, and add or
-  // remove.
+  // The selected section, exam sitting or personal event, in as few words
+  // as possible: a way back, its code, when and where, then the seats with
+  // their alert bell, its color, and everything else folded into Details;
+  // last, skip the day, edit, remove or add. No subtitles.
   import { app, schedule, section, items, toggleSection, removeBlock, watch, unwatch, watchOf, COLORS, EVENT_COLOR, colorOf, setColor, blockColor, ensureCatalog, termInfo, removeDay } from './lib/state.svelte.js';
   import { fmtMeeting, fmtTime } from './lib/schedule.js';
   import { loadDescriptions } from './lib/catalog.js';
@@ -17,7 +18,6 @@
   import { google, isGoogle } from './lib/google.svelte.js';
   import { googleId } from './lib/googleEvents.js';
   import Icon from './Icon.svelte';
-  import { slide } from 'svelte/transition';
 
   let { closable = true } = $props();
   const sec = $derived(section(app.selected));
@@ -26,7 +26,7 @@
   // An exam sitting belongs to one of the schedule's sections.
   const exam = $derived(item?.exam);
   const examOf = $derived(exam ? section(item.of) : undefined);
-  const examDay = $derived(exam ? new Date(exam.date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }) : '');
+  const examDay = $derived(exam ? new Date(exam.date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' }) : '');
   const inSchedule = $derived(schedule()?.sections.includes(app.selected));
   // A Google Calendar event: shown as it is, and changed in Google Calendar.
   const outside = $derived(isGoogle(app.selected) ? google.events.find((e) => googleId(e) === app.selected) : null);
@@ -67,12 +67,10 @@
 
   // The full section, its other terms and its description come from the
   // catalog when it is available; the compact copy renders meanwhile.
-  // The first lookup slides its rows in rather than snapping them into place.
   let busy = $state(false);
   const key = $derived(sec ? `${app.inst}/${app.term}/${sec.course}` : '');
   const course = $derived(key ? courses.get(key) : null);
   const desc = $derived(key ? descs.get(key) : null);
-  const reveal = (node) => slide(node, { duration: matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200 });
   $effect(() => {
     const id = app.selected;
     if (!id || isGoogle(id)) return;
@@ -87,6 +85,9 @@
   const description = $derived(desc?.d ?? course?.description ?? '');
   const prereqs = $derived(desc?.p ?? course?.prereqs ?? '');
   const freshness = $derived(sec?.fetched_at ? `Last checked ${new Date(sec.fetched_at * 1000).toLocaleString()}` : 'Saved seat count; last check unknown');
+  const places = $derived([...new Set(meetings.map((m) => m.location).filter(Boolean))].join('; '));
+  const when = $derived([meetings.map(fmtMeeting).join('; ') || 'No meeting times', places].filter(Boolean).join(' · '));
+  const examsText = (list) => list.map((e) => `Exam ${new Date(e.date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })} ${fmtTime(e.start)} – ${fmtTime(e.end)}`).join('; ');
   const seats = $derived(!sec ? '' : sec.available < 0 ? 'Seat count not published' : sec.capacity ? `${sec.available} of ${sec.capacity} seats open` : sec.available > 0 ? 'Seats open' : 'Full');
 
   async function toggleWatch() {
@@ -114,112 +115,77 @@
   }
 </script>
 
-{#if outside}
+{#snippet head(color, title)}
   <header>
-    <span class="swatch" style:background={outsideCalendar?.color || 'var(--track)'}></span>
-    <div class="rt">
-      <h2 class="title">{outside.title}</h2>
-      {#if outsideCalendar?.name}<p class="sub">{outsideCalendar.name}</p>{/if}
-    </div>
-    {#if closable}<button class="btn flat icon round" onclick={() => (app.selected = '')} aria-label="Close" title="Close"><Icon name="close" /></button>{/if}
+    {#if closable}<button class="btn flat icon round back" onclick={() => (app.selected = '')} aria-label="Back to Tasks" title="Back to Tasks"><Icon name="back" /></button>{/if}
+    <span class="dot" style:background={color}></span>
+    <h2 class="title">{title}</h2>
   </header>
-  <ul class="facts">
-    <li><Icon name="clock" />{outsideWhen}</li>
-    {#if outside.location}<li><Icon name="pin" />{outside.location}</li>{/if}
-  </ul>
+{/snippet}
+
+{#if outside}
+  {@render head(outsideCalendar?.color || 'var(--track)', outside.title)}
+  <p class="when">{[outsideWhen, outside.location].filter(Boolean).join(' · ')}</p>
   {#if outside.link}<div class="actions"><a class="btn pill" href={outside.link} target="_blank" rel="noopener">Open in Google Calendar <Icon name="open" /></a></div>{/if}
 {:else if isGoogle(app.selected)}
   <p class="hint">This event is no longer in Google Calendar</p>
 {:else if exam}
-  <header>
-    <span class="swatch" style:background={item.color}></span>
-    <div class="rt">
-      <h2 class="title">{item.label}</h2>
-      {#if examOf}<p class="sub">{examOf.title} · {examOf.course}-{examOf.num}</p>{/if}
-    </div>
-    {#if closable}<button class="btn flat icon round" onclick={() => (app.selected = '')} aria-label="Close" title="Close"><Icon name="close" /></button>{/if}
-  </header>
-  <ul class="facts">
-    <li><Icon name="dates" />{examDay}</li>
-    <li><Icon name="clock" />{fmtTime(exam.start)} – {fmtTime(exam.end)}</li>
-    {#if exam.location}<li><Icon name="pin" />{exam.location}</li>{/if}
-    <li class="dim">Published with the class by the school</li>
-  </ul>
+  {@render head(item.color, item.label)}
+  <p class="when">{[examDay, `${fmtTime(exam.start)} – ${fmtTime(exam.end)}`, exam.location].filter(Boolean).join(' · ')}</p>
   <div class="actions">
     {#if examOf}<button class="btn pill" onclick={() => (app.selected = item.of)}>Show Class</button>{/if}
-    <button class="btn pill" onclick={hideExam}>Hide This Exam</button>
+    <button class="btn pill" onclick={hideExam} aria-label="Hide This Exam">Hide</button>
   </div>
 {:else if !sec && !block}
   <p class="hint">{settled ? 'Not in this term’s classes' : 'Loading…'}</p>
 {:else}
-  <header>
-    <span class="swatch" style:background={item?.color || colorOf(sec?.course)}></span>
-    <div class="rt">
-      <h2 class="title">{sec ? `${sec.course}-${sec.num}` : block.name}</h2>
-      {#if sec}<p class="sub">{sec.title}</p>{:else if block.course}<p class="sub">{block.course}</p>{/if}
-    </div>
-    {#if closable}<button class="btn flat icon round" onclick={() => (app.selected = '')} aria-label="Close" title="Close"><Icon name="close" /></button>{/if}
-  </header>
+  {@render head(item?.color || colorOf(sec?.course), sec ? `${sec.course}-${sec.num}` : block.name)}
+  <p class="when">{when}</p>
+  {#if block?.note}<p class="note">{block.note}</p>{/if}
 
-  <ul class="facts">
-    <li><Icon name="clock" />{meetings.map(fmtMeeting).join('; ') || 'No meeting times'}</li>
-    {#if meetings.some((m) => m.location)}<li><Icon name="pin" />{[...new Set(meetings.map((m) => m.location).filter(Boolean))].join('; ')}</li>{/if}
-    {#if sec}
-      <li><Icon name="person" />{sec.instructors.join(', ') || 'Staff'}</li>
-      <li class:full={sec.available === 0}><Icon name="seats" />{seats}{sec.waitlist ? `, ${sec.waitlist} waitlisted` : ''}</li>
-      <li class="dim">{freshness}</li>
-      {#if sec.credits}<li><Icon name="credits" />{sec.credits} credits{sec.mode ? ` · ${sec.mode}` : ''}</li>{/if}
-      {#if sec.start && sec.start !== termInfo()?.start}<li><Icon name="dates" />{sec.start} to {sec.end}</li>{/if}
-      {#if sec.exams?.length}<li><Icon name="dates" /><span>{sec.exams.map((e) => `Exam ${new Date(e.date + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })} ${fmtTime(e.start)} – ${fmtTime(e.end)}`).join('; ')}</span></li>{/if}
-      <li><Icon name="hash" /><span>{sec.id}{#if sec.link}<span class="dim linked">· linked group {sec.link}</span>{/if}{#if sec.url} · <a href={sec.url} target="_blank" rel="noopener">source</a>{/if}</span></li>
-    {/if}
-  </ul>
-
-  {#if sec}
-    <label class="list watchrow">
-      <span class="row">
-        <Icon name="bell" />
-        <span class="rt"><span class="t">Alert When a Seat Opens</span></span>
-        <input type="checkbox" class="switch" checked={!!w} disabled={busy} onchange={toggleWatch}>
-      </span>
-    </label>
-    {#if sec.attributes?.length || course?.offered?.length > 1}
-      <div class="chips" in:reveal>
-        {#each sec.attributes || [] as a (a)}<span>{a}</span>{/each}
-        {#if course?.offered?.length > 1}{#each course.offered as t (t)}<span class="term">{t}</span>{/each}{/if}
-      </div>
-    {/if}
-    {#if description || prereqs}
-      <details class="desc" in:reveal>
-        <summary>{description ? 'Description' : 'Prerequisites'}</summary>
-        {#if description}<p>{description}</p>{/if}
-        {#if prereqs}<p class="pre">{prereqs}</p>{/if}
-      </details>
-    {/if}
-  {:else if block.note}
-    <p class="note">{block.note}</p>
-  {/if}
-
-  {#if inSchedule || block}
-    <div class="colors" role="radiogroup" aria-label="Color">
-      {#each swatches as c (c)}<button role="radio" aria-checked={shown === c} class:on={shown === c} style:background={c} onclick={() => paint(c)} aria-label={c === EVENT_COLOR ? 'No color' : 'Color'}></button>{/each}
-    </div>
-  {/if}
-
-  {#if occurrence}
-    <div class="list occ">
-      <div class="row">
-        <Icon name="dates" />
-        <span class="rt"><span class="t">{occurrence.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</span></span>
-        <button class="btn flat" onclick={removeThisDay}>Remove This Day</button>
-      </div>
+  {#if sec || inSchedule || block}
+    <div class="list">
+      {#if sec}
+        <div class="row seats" class:full={sec.available === 0} title={freshness}>
+          <span class="t">{seats}</span>
+          <button class="btn flat icon round bell" class:on={!!w} aria-pressed={!!w} disabled={busy} onclick={toggleWatch} aria-label="Alert When a Seat Opens" title="Alert When a Seat Opens"><Icon name="bell" /></button>
+        </div>
+      {/if}
+      {#if inSchedule || block}
+        <div class="row colors" role="radiogroup" aria-label="Color">
+          {#each swatches as c (c)}<button role="radio" aria-checked={shown === c} class:on={shown === c} style:background={c} onclick={() => paint(c)} aria-label={c === EVENT_COLOR ? 'No color' : 'Color'}></button>{/each}
+        </div>
+      {/if}
+      {#if sec}
+        <details class="more">
+          <summary class="row"><span class="t">Details</span><span class="chev"><Icon name="next" /></span></summary>
+          <div class="facts">
+            <p>{sec.title}</p>
+            <p>{sec.instructors.join(', ') || 'Staff'}</p>
+            {#if sec.waitlist}<p>{sec.waitlist} waitlisted</p>{/if}
+            {#if sec.exams?.length}<p>{examsText(sec.exams)}</p>{/if}
+            {#if sec.credits}<p>{sec.credits} credits{sec.mode ? ` · ${sec.mode}` : ''}</p>{/if}
+            {#if sec.start && sec.start !== termInfo()?.start}<p>{sec.start} to {sec.end}</p>{/if}
+            <p>{sec.id}{sec.link ? ` · linked group ${sec.link}` : ''}{#if sec.url}{' · '}<a href={sec.url} target="_blank" rel="noopener">source</a>{/if}</p>
+            {#if sec.attributes?.length || course?.offered?.length > 1}
+              <div class="chips">
+                {#each sec.attributes || [] as a (a)}<span>{a}</span>{/each}
+                {#if course?.offered?.length > 1}{#each course.offered as t (t)}<span class="term">{t}</span>{/each}{/if}
+              </div>
+            {/if}
+            {#if description}<p class="desc">{description}</p>{/if}
+            {#if prereqs}<p class="desc pre">{prereqs}</p>{/if}
+          </div>
+        </details>
+      {/if}
     </div>
   {/if}
 
   <div class="actions">
+    {#if occurrence}<button class="btn pill" onclick={removeThisDay}>Skip {occurrence.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</button>{/if}
     {#if block}<button class="btn pill" onclick={() => (app.editing = block.id)}>Edit</button>{/if}
     {#if inSchedule || block}
-      <button class="btn pill" onclick={remove}>Remove From Schedule</button>
+      <button class="btn pill remove" onclick={remove} aria-label="Remove From Schedule">Remove</button>
     {:else}
       <button class="btn pill suggested" onclick={add}>Add to Schedule</button>
     {/if}
@@ -227,38 +193,44 @@
 {/if}
 
 <style>
-  header { display: flex; align-items: flex-start; gap: 12px; }
-  .swatch { flex: none; width: 36px; height: 36px; margin-top: 2px; border-radius: 9px; }
-  header h2 { font-size: 1.25rem; white-space: normal; }
-  .sub { margin-top: 1px; color: var(--text2); }
-  .facts { margin: 16px 0 14px; }
-  .facts li { display: flex; align-items: flex-start; gap: 12px; padding: 5px 0; }
-  .facts :global(.i) { flex: none; margin-top: 3px; color: var(--muted); }
-  .facts .full { color: var(--red); font-weight: 600; }
-  .linked { margin-left: 4px; }
-  .facts .full :global(.i) { color: inherit; }
-  .watchrow { display: block; cursor: pointer; }
-  .watchrow :global(.i) { color: var(--muted); }
-  .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
+  header { display: flex; align-items: center; gap: 8px; min-height: 34px; }
+  .back { margin-left: -9px; }
+  .dot { flex: none; width: 12px; height: 12px; border-radius: 50%; }
+  header h2 { min-width: 0; font-size: 1.2rem; line-height: 1.25; white-space: normal; overflow-wrap: anywhere; }
+  .when { margin-top: 8px; color: var(--text2); }
+  .note { margin-top: 6px; color: var(--text2); white-space: pre-line; }
+  .list { margin-top: 14px; }
+  .list .row { min-height: 46px; padding: 0 6px 0 12px; }
+  .seats .t { flex: 1; min-width: 0; }
+  .seats.full .t { color: var(--red); font-weight: 600; }
+  .bell { color: var(--muted); }
+  .bell.on { color: var(--accent-fg); }
+  .bell.on :global(.i) { fill: currentColor; }
+  .colors { gap: 8px; }
+  /* The chosen color wears a ring clear of it, which shows on the palest swatch. */
+  .colors button { flex: none; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; }
+  .colors button.on { outline: 2px solid var(--text); outline-offset: 2px; }
+  .more summary { list-style: none; cursor: pointer; }
+  .more summary::-webkit-details-marker { display: none; }
+  .more summary .t { flex: 1; }
+  .more .chev { padding: 0 8px; }
+  .more .chev :global(.i) { transition: rotate var(--quick-open) var(--ease-open); }
+  .more[open] .chev :global(.i) { rotate: 90deg; }
+  .facts { display: flex; flex-direction: column; gap: 4px; padding: 0 12px 12px; color: var(--text2); font-size: .9rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
   .chips span { padding: 2px 8px; border-radius: 6px; background: var(--hover); color: var(--text2); font-size: .78rem; }
   .chips .term { background: var(--tint); color: var(--accent-fg); }
-  .desc { margin-top: 12px; }
-  .desc summary { cursor: pointer; color: var(--accent-fg); font-weight: 500; }
-  .desc p { margin-top: 6px; color: var(--text2); font-size: .9rem; white-space: pre-line; }
-  .desc .pre { font-size: .82rem; }
-  /* The description slides open and shut where the browser can ease to its height. */
+  .desc { margin-top: 4px; white-space: pre-line; }
+  .desc.pre { font-size: .82rem; }
+  /* Details slides open and shut where the browser can ease to its height. */
   @supports (interpolate-size: allow-keywords) {
     @media (prefers-reduced-motion: no-preference) {
-      .desc { interpolate-size: allow-keywords; }
-      .desc::details-content { block-size: 0; opacity: 0; overflow: clip; transition: block-size var(--close) var(--ease-close), opacity var(--close) var(--ease-close), content-visibility var(--close) allow-discrete; }
-      .desc[open]::details-content { block-size: auto; opacity: 1; transition-duration: var(--open); transition-timing-function: var(--ease-open); }
+      .more { interpolate-size: allow-keywords; }
+      .more::details-content { block-size: 0; opacity: 0; overflow: clip; transition: block-size var(--close) var(--ease-close), opacity var(--close) var(--ease-close), content-visibility var(--close) allow-discrete; }
+      .more[open]::details-content { block-size: auto; opacity: 1; transition-duration: var(--open); transition-timing-function: var(--ease-open); }
     }
   }
-  .note { margin-top: 12px; color: var(--text2); white-space: pre-line; }
-  .colors { display: flex; gap: 6px; margin-top: 14px; }
-  .colors button { width: 24px; height: 24px; border: 2px solid transparent; border-radius: 50%; }
-  .colors button.on { border-color: var(--text); }
-  .occ { margin-top: 14px; }
-  .occ :global(.i) { color: var(--muted); }
-  .actions { display: flex; justify-content: center; gap: 8px; margin-top: 22px; }
+  .actions { display: flex; gap: 8px; margin-top: 14px; }
+  .actions .btn { flex: 1; min-width: 0; }
+  .remove { color: var(--red); }
 </style>

@@ -1,12 +1,16 @@
 <script>
   // Every task, by when it is due. The container names the view (the header
   // bar's Tasks button, the phone's Tasks page), so there is no heading: a
-  // search entry spans the top, with the filter menu and Add.
+  // search entry spans the top, with the filter menu and Add. In the side
+  // pane (framed) Progress and the search entry stay put while the list
+  // beneath them scrolls, with whatever the pane adds after it.
   //
-  // Detail fades with distance. Up Next shows overdue work, this week and
-  // at least the next four days in full under a heading a day; next week,
-  // Later and No Due Date fold into one row each, showing their load rather
-  // than their rows, and open in place. A search lists every match. A row
+  // Detail fades with distance. Up Next shows overdue work and this week in
+  // full under a heading a day; next week, Later and No Due Date fold into
+  // a card each, showing their load rather than their rows, and open in
+  // place. Shown, completed work stays where it was due; what was due before
+  // today sits above the list, a scroll back from the present, and never
+  // under Overdue. A search lists every match. A row
   // says only what its heading does not: the tick circle takes the class's
   // color, and a time shows only when it is not 11:59pm.
   import { app, taskCourses, taskCourseCode, taskColor, colorOf, syncLMS, lmsSync, lmsOf, lmsConnected, setTaskDone, campusZone } from './lib/state.svelte.js';
@@ -16,12 +20,14 @@
   import { toast, taskView } from './lib/ui.svelte.js';
   import { still, unfold } from './lib/motion.js';
   import { cubicOut, cubicInOut } from 'svelte/easing';
+  import { tick as settled, untrack } from 'svelte';
   import { fade } from 'svelte/transition';
   import { PROVIDER_NAMES } from './lib/providers.js';
   import Icon from './Icon.svelte';
   import Menu from './Menu.svelte';
   import Stats from './Stats.svelte';
 
+  let { framed = false, children } = $props();
   let q = $state('');
   // Folds open for as long as the list is on screen, sliding open and shut
   // (see unfold in lib/motion.js).
@@ -46,10 +52,11 @@
     return { ...h, name, date, items: order(h.items) };
   });
   const split = $derived(upNext(shown, new Date(), app.weekStart, zone));
+  const past = $derived(words.length ? [] : headed(split.past));
   const near = $derived(headed(words.length ? shown : split.near));
-  const FOLDS = { next: ['Next Week', 'Rest of Next Week'], later: ['Later', 'Later'], undated: ['No Due Date', 'No Due Date'] };
+  const FOLDS = { next: 'Next Week', later: 'Later', undated: 'No Due Date' };
   const folds = $derived(words.length ? [] : split.folds.map((f) => ({
-    ...f, name: FOLDS[f.key][f.items.length < f.of ? 1 : 0], headings: headed(f.items),
+    ...f, name: FOLDS[f.key], headings: headed(f.items),
     load: f.key === 'next' ? load(f.items) : null,
     classes: f.key === 'next' ? null : classCounts(f.items),
   })));
@@ -141,6 +148,29 @@
       },
     };
   }
+
+  // The present stays where it is on screen as completed work comes and goes
+  // above it, so earlier days are a scroll back; a list that opens with them
+  // opens at the present, just under the toolbar.
+  let present = $state(), bar = $state();
+  const searching = $derived(words.length > 0);
+  const scrollerOf = (el) => { for (let n = el?.parentElement; n; n = n.parentElement) if (/auto|scroll/.test(getComputedStyle(n).overflowY)) return n; };
+  // In the scroller's own units, which CSS zoom leaves unscaled.
+  const offset = (sc) => {
+    const r = sc.getBoundingClientRect();
+    return (present.getBoundingClientRect().top - r.top) * (sc.offsetHeight / r.height || 1) - (framed ? 0 : bar.offsetHeight);
+  };
+  $effect.pre(() => {
+    taskView.showDone; taskView.filter; searching;
+    untrack(() => {
+      const sc = present && scrollerOf(present), was = sc ? offset(sc) : past.length ? 0 : null;
+      settled().then(() => {
+        const sc = present && scrollerOf(present);
+        if (sc && was != null) sc.scrollTop += offset(sc) - was;
+      });
+    });
+  });
+
   // The empty list's hint waits for the last row to close.
   const settle = (node) => (justTicked && !still() ? fade(node, { delay: 560, duration: 200 }) : { duration: 0 });
 
@@ -160,86 +190,116 @@
   </li>
 {/snippet}
 
-<section class="tasks">
-  <Stats />
-  <div class="toolbar">
-    {#if app.tasks.length}
-      <label class="entry grow"><Icon name="search" /><input type="search" placeholder="Search tasks…" bind:value={q} onkeydown={(e) => { if (e.key === 'Escape') { e.preventDefault(); q = ''; } }} aria-label="Search tasks"><button type="button" class="clear" onclick={() => (q = '')} aria-label="Clear"><Icon name="close" /></button></label>
-      <Menu icon="filter" label={filterLabel} tint={filterLabel ? colorOf(filterLabel) : ''} active={taskView.showDone || taskView.sort !== 'due'} tooltip="Filter and Sort" sections={filterMenu} />
-    {:else}
-      <span class="grow"></span>
-    {/if}
-    {#if connected}<button class="btn flat icon" class:spin={syncing} onclick={sync} disabled={syncing} aria-busy={syncing} title="Sync assignments" aria-label="Sync assignments"><Icon name="sync" /></button>{/if}
-    <button class="btn flat icon" onclick={() => (app.taskEditing = 'new')} title="Add Task" aria-label="Add task"><Icon name="plus" /></button>
-  </div>
-
-  {#if !app.tasks.length}
-    {#if connected}
-      {#if !syncing && !syncError}<p class="hint">Nothing due</p>{/if}
-    {:else}
-      <p class="hint">Add tasks by hand, or <button class="btn link" onclick={() => (app.connect = PROVIDER_NAMES[lmsOf()?.kind] ? lmsOf().kind : 'pick')}>connect {lmsName || 'Canvas or a calendar'}</button></p>
-    {/if}
-  {/if}
-
-  {#each near as h (h.key)}
-    <div class="group" out:closeGroup|global>
-      <h3 class="group-title dated" class:overdue={h.kind === 'overdue'}><span>{h.name}</span>{#if h.date}<span class="date">{h.date}</span>{/if}</h3>
-      <ul class="list">
-        {#each h.items as t (t.id)}{@render row(t, h.kind)}{/each}
-      </ul>
+<section class="tasks" class:framed>
+  <div class="head" class:pane-head={framed}>
+    <Stats />
+    <div class="toolbar" bind:this={bar}>
+      {#if app.tasks.length}
+        <label class="entry grow"><Icon name="search" /><input type="search" placeholder="Search tasks…" bind:value={q} onkeydown={(e) => { if (e.key === 'Escape') { e.preventDefault(); q = ''; } }} aria-label="Search tasks"><button type="button" class="clear" onclick={() => (q = '')} aria-label="Clear"><Icon name="close" /></button></label>
+        <Menu icon="filter" label={filterLabel} tint={filterLabel ? colorOf(filterLabel) : ''} active={taskView.showDone || taskView.sort !== 'due'} tooltip="Filter and Sort" sections={filterMenu} />
+      {:else}
+        <span class="grow"></span>
+      {/if}
+      {#if connected}<button class="btn flat icon" class:spin={syncing} onclick={sync} disabled={syncing} aria-busy={syncing} title="Sync assignments" aria-label="Sync assignments"><Icon name="sync" /></button>{/if}
+      <button class="btn flat icon" onclick={() => (app.taskEditing = 'new')} title="Add Task" aria-label="Add task"><Icon name="plus" /></button>
     </div>
-  {/each}
+  </div>
+  <div class:pane-scroll={framed}>
+    {#if !app.tasks.length}
+      {#if connected}
+        {#if !syncing && !syncError}<p class="hint">Nothing due</p>{/if}
+      {:else}
+        <p class="hint">Add tasks by hand, or <button class="btn link" onclick={() => (app.connect = PROVIDER_NAMES[lmsOf()?.kind] ? lmsOf().kind : 'pick')}>connect {lmsName || 'Canvas or a calendar'}</button></p>
+      {/if}
+    {/if}
 
-  {#if folds.length}
-    <div class="group">
-      <h3 class="group-title">Coming Up</h3>
-      <div class="folds">
-        {#each folds as f (f.key)}
-          <ul class="list">
-            <li class="fold-item">
-              <button type="button" class="fold" aria-expanded={!!opened[f.key]} aria-label="{f.name}, {f.items.length} {f.items.length === 1 ? 'task' : 'tasks'}" onclick={() => (opened[f.key] = !opened[f.key])}>
-                <span class="ft">
-                  <span class="fn">{f.name}<span class="n">{f.items.length}</span></span>
-                  {#if f.load}
-                    <span class="load" aria-hidden="true">
-                      {#each f.load as day, i (i)}
-                        <span class="day" class:empty={!day.marks.length}><span class="marks">{#each day.marks as color, j (j)}<i style:--cc={color}></i>{/each}</span><small>{day.letter}</small></span>
-                      {/each}
-                    </span>
-                  {:else}
-                    <span class="classes" aria-hidden="true">
-                      <span class="share">{#each f.classes as c (c.label)}<i style:--cc={c.color} style:flex={c.n}></i>{/each}</span>
-                      <span class="legend" style:--rows={Math.ceil(f.classes.length / 2)}>{#each f.classes as c (c.label)}<span><i style:--cc={c.color}></i><span class="lc">{c.label}</span><b>{c.n}</b></span>{/each}</span>
-                    </span>
-                  {/if}
-                </span>
-                <span class="chev"><Icon name="down" /></span>
-              </button>
-            </li>
-            {#if opened[f.key]}
-              <li class="fold-body" transition:unfold>
-                <ul>
-                  {#each f.headings as h (h.key)}
-                    <li class="sub" class:overdue={h.kind === 'overdue'}><span>{h.name}</span>{#if h.date}<span class="date">{h.date}</span>{/if}</li>
-                    {#each h.items as t (t.id)}{@render row(t, h.kind)}{/each}
-                  {/each}
-                </ul>
-              </li>
-            {/if}
-          </ul>
+    {#if past.length}
+      <div class="past">
+        {#each past as h (h.key)}
+          <div class="group" out:closeGroup|global>
+            <h3 class="group-title dated"><span>{h.name}</span>{#if h.date}<span class="date">{h.date}</span>{/if}</h3>
+            <ul class="list">
+              {#each h.items as t (t.id)}{@render row(t, h.kind)}{/each}
+            </ul>
+          </div>
         {/each}
       </div>
-    </div>
-  {/if}
+    {/if}
 
-  {#if !near.length && !folds.length && app.tasks.length}
-    <p class="hint" in:settle>{q ? 'No tasks match' : `Nothing to do${taskView.filter ? ` for ${taskView.filter}` : ''}`}</p>
-  {/if}
+    <div class="present" bind:this={present}>
+    {#each near as h (h.key)}
+      <div class="group" out:closeGroup|global>
+        <h3 class="group-title dated" class:overdue={h.kind === 'overdue'}><span>{h.name}</span>{#if h.date}<span class="date">{h.date}</span>{/if}</h3>
+        <ul class="list">
+          {#each h.items as t (t.id)}{@render row(t, h.kind)}{/each}
+        </ul>
+      </div>
+    {/each}
+
+    {#if !near.length && folds.length}<p class="hint week-clear" in:settle>Nothing due this week</p>{/if}
+    {#if folds.length}
+      <div class="group">
+        <h3 class="group-title">Coming Up</h3>
+        <div class="folds">
+          {#each folds as f (f.key)}
+            <ul class="list">
+              <li class="fold-item">
+                <button type="button" class="fold" aria-expanded={!!opened[f.key]} aria-label="{f.name}, {f.items.length} {f.items.length === 1 ? 'task' : 'tasks'}" onclick={() => (opened[f.key] = !opened[f.key])}>
+                  <span class="ft">
+                    <span class="fn">{f.name}<span class="n">{f.items.length}</span></span>
+                    {#if f.load}
+                      <span class="load" aria-hidden="true">
+                        {#each f.load as day, i (i)}
+                          <span class="day" class:empty={!day.marks.length}><span class="marks">{#each day.marks as color, j (j)}<i style:--cc={color}></i>{/each}</span><small>{day.letter}</small></span>
+                        {/each}
+                      </span>
+                    {:else}
+                      <span class="classes" aria-hidden="true">
+                        <span class="share">{#each f.classes as c (c.label)}<i style:--cc={c.color} style:flex={c.n}></i>{/each}</span>
+                        <span class="legend" style:--rows={Math.ceil(f.classes.length / 2)}>{#each f.classes as c (c.label)}<span><i style:--cc={c.color}></i><span class="lc">{c.label}</span><b>{c.n}</b></span>{/each}</span>
+                      </span>
+                    {/if}
+                  </span>
+                  <span class="chev"><Icon name="down" /></span>
+                </button>
+              </li>
+              {#if opened[f.key]}
+                <li class="fold-body" transition:unfold>
+                  <ul>
+                    {#each f.headings as h (h.key)}
+                      <li class="sub" class:overdue={h.kind === 'overdue'}><span>{h.name}</span>{#if h.date}<span class="date">{h.date}</span>{/if}</li>
+                      {#each h.items as t (t.id)}{@render row(t, h.kind)}{/each}
+                    {/each}
+                  </ul>
+                </li>
+              {/if}
+            </ul>
+          {/each}
+        </div>
+      </div>
+    {/if}
+
+    {#if !near.length && !folds.length && app.tasks.length}
+      <p class="hint" in:settle>{q ? 'No tasks match' : `Nothing to do${taskView.filter ? ` for ${taskView.filter}` : ''}`}</p>
+    {/if}
+    </div>
+    {@render children?.()}
+  </div>
 </section>
 
 <style>
   .tasks { margin-bottom: 20px; }
+  .tasks.framed { flex: 1; min-height: 0; display: flex; flex-direction: column; margin: 0; }
+  .framed .pane-head { padding-bottom: 10px; }
+  .framed .toolbar { margin-bottom: 0; }
+  .framed .pane-scroll { padding-top: 0; }
   .toolbar { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+  /* On a phone the page scrolls as a whole, and the toolbar stays at its
+     top on the page's own background, over its 12px padding. At rest its
+     background stops short of Progress's edge. */
+  .tasks:not(.framed) .head { display: contents; }
+  .tasks:not(.framed) .toolbar { position: sticky; top: -12px; z-index: 1; margin: -10px -12px 0; padding: 10px 12px 10px; background: var(--view); }
+  .past { margin-bottom: 20px; }
   .grow { flex: 1; min-width: 0; }
   .dated { display: flex; align-items: baseline; gap: 8px; }
   .date { margin-left: auto; margin-right: 2px; font-weight: 500; }
@@ -249,6 +309,7 @@
   .row { position: relative; }
   .done .t { color: var(--muted); text-decoration: line-through; }
   .hint { margin: 4px 2px; font-size: .9rem; }
+  .week-clear { margin-bottom: 12px; }
 
   /* The class's pastel draws the tick circle, darker and stronger so it holds up as a line. */
   .check.tinted { border-color: var(--cc); }

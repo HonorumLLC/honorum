@@ -108,20 +108,21 @@ const dayKey = (d) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 export const campusDue = (iso, zone) => campusNow(zone, new Date(iso));
 
 // Buckets: overdue, today, tomorrow, the rest of this week, next week (weeks
-// start on Monday or Sunday, like the calendar), later, and undated.
+// start on Monday or Sunday, like the calendar), later, and undated. Work
+// done that was due before today is past rather than overdue.
 export function groupTasks(tasks, instant = new Date(), weekStart = 'mon', zone = '') {
   const now = campusNow(zone, instant);
   const today = dayKey(now), tomorrow = dayKey(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1));
   const into = weekStart === 'sun' ? now.getDay() : (now.getDay() + 6) % 7; // days since the week began
   const sunday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (7 - into)); // first day of next week
   const following = new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate() + 7); // first day of the week after next
-  const g = { overdue: [], today: [], tomorrow: [], week: [], next: [], later: [], undated: [] };
+  const g = { past: [], overdue: [], today: [], tomorrow: [], week: [], next: [], later: [], undated: [] };
   for (const t of [...tasks].sort((a, b) => (a.due || '9').localeCompare(b.due || '9'))) {
     if (!t.due) { g.undated.push(t); continue; }
     const d = campusDue(t.due, zone), k = dayKey(d);
     if (k === today) g.today.push(t);
     else if (k === tomorrow) g.tomorrow.push(t);
-    else if (d < now) g.overdue.push(t);
+    else if (d < now) (t.done ? g.past : g.overdue).push(t);
     else if (d < sunday) g.week.push(t);
     else if (d < following) g.next.push(t);
     else g.later.push(t);
@@ -133,39 +134,34 @@ let dueTime, dueDate;
 const formatDate = (formatter, date) => Number.isNaN(date.getTime()) ? 'Invalid Date' : formatter.format(date);
 const shortDate = (date) => formatDate(dueDate ??= new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }), date);
 
-// Up Next: overdue work, all of this week, and at least the next four days
-// (today through three days on) are shown in full, stretching to the first
-// three tasks when those days hold fewer. The rest folds by group, with a
-// partial next week named "Rest of Next Week".
+// Up Next: overdue work and the rest of this week are listed in full; next
+// week, Later and No Due Date each fold whole, so nothing past this week's
+// end shows in the list. Completed work due before today is past, listed
+// before the rest when completed tasks are shown.
 export function upNext(tasks, instant = new Date(), weekStart = 'mon', zone = '') {
   const g = groupTasks(tasks, instant, weekStart, zone);
-  const now = campusNow(zone, instant);
-  const horizon = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 4);
-  const ordered = [...g.overdue, ...g.today, ...g.tomorrow, ...g.week, ...g.next, ...g.later, ...g.undated];
-  let n = ordered.findIndex((t) => !t.due || campusDue(t.due, zone) >= horizon);
-  if (n < 0) n = ordered.length;
-  n = Math.max(n, g.overdue.length + g.today.length + g.tomorrow.length + g.week.length, Math.min(3, ordered.length));
-  const rest = new Set(ordered.slice(n));
-  const folds = ['next', 'later', 'undated']
-    .map((key) => ({ key, items: g[key].filter((t) => rest.has(t)), of: g[key].length }))
-    .filter((f) => f.items.length);
-  return { near: ordered.slice(0, n), folds };
+  const folds = ['next', 'later', 'undated'].map((key) => ({ key, items: g[key] })).filter((f) => f.items.length);
+  return { past: g.past, near: [...g.overdue, ...g.today, ...g.tomorrow, ...g.week], folds };
 }
 
-// Headings for a list in due order: Overdue, one a day through next week, one
-// a week after that, then No Due Date. Each holds its tasks; rows then say only
-// what the heading does not (taskWhen).
+// Headings for a list in due order: completed work from before today, a
+// day at a time back to the start of last week and a week at a time before
+// that; then Overdue, which is only work still open; one a day through next
+// week, one a week after that, then No Due Date. Each holds its tasks; rows
+// then say only what the heading does not (taskWhen).
 export function taskHeadings(tasks, instant = new Date(), weekStart = 'mon', zone = '') {
-  const now = campusNow(zone, instant), today = dayKey(now);
+  const now = campusNow(zone, instant), midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const into = weekStart === 'sun' ? now.getDay() : (now.getDay() + 6) % 7;
   const following = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 14 - into);
+  const previous = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7 - into);
+  const rank = (t) => (!t.due || campusDue(t.due, zone) >= midnight ? 2 : t.done ? 0 : 1);
   const out = [];
-  for (const t of [...tasks].sort((a, b) => (a.due || '9').localeCompare(b.due || '9'))) {
+  for (const t of [...tasks].sort((a, b) => rank(a) - rank(b) || (a.due || '9').localeCompare(b.due || '9'))) {
     let kind = 'undated', start = null;
     if (t.due) {
       const d = campusDue(t.due, zone);
-      if (dayKey(d) !== today && d < now) kind = 'overdue';
-      else if (d < following) { kind = 'day'; start = new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+      if (d < midnight && !t.done) kind = 'overdue';
+      else if (d < following && d >= (d < midnight ? previous : midnight)) { kind = 'day'; start = new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
       else {
         kind = 'week';
         const back = weekStart === 'sun' ? d.getDay() : (d.getDay() + 6) % 7;
@@ -181,7 +177,7 @@ export function taskHeadings(tasks, instant = new Date(), weekStart = 'mon', zon
 }
 
 let headWeekday, rowWeekday;
-// A heading's name and the date beside it: ["Today", "Oct 2"], ["Monday", "Oct 5"],
+// A heading's name and the date beside it: ["Today", "Oct 2"], ["Yesterday", "Oct 1"], ["Monday", "Oct 5"],
 // ["Week of Oct 12", ""], ["Overdue", ""].
 export function headingLabel(h, instant = new Date(), zone = '') {
   if (h.kind === 'overdue') return ['Overdue', ''];
@@ -190,7 +186,7 @@ export function headingLabel(h, instant = new Date(), zone = '') {
   if (h.kind === 'week') return [`Week of ${date}`, ''];
   const now = campusNow(zone, instant);
   const days = Math.round((h.start - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 86400e3);
-  return [days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : formatDate(headWeekday ??= new Intl.DateTimeFormat(undefined, { weekday: 'long' }), h.start), date];
+  return [days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : days === -1 ? 'Yesterday' : formatDate(headWeekday ??= new Intl.DateTimeFormat(undefined, { weekday: 'long' }), h.start), date];
 }
 
 // What a row adds to its heading: the date under Overdue, the weekday under a

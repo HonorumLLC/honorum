@@ -45,17 +45,33 @@ test('groupTasks buckets', () => {
   assert.deepEqual([gs.week.length, gs.next.length], [1, 1]);
 });
 
-test('Up Next keeps four days visible across a week boundary and shows at least three tasks', () => {
+test('Up Next lists only this week and folds the rest whole', () => {
   const now = new Date(2026, 9, 2, 14, 15); // a Friday
   const at = (m, d, h = 23, min = 59) => ({ id: `${m}-${d}-${h}`, due: new Date(2026, m - 1, d, h, min).toISOString() });
   const late = at(9, 30), sun = at(10, 4), mon = at(10, 5, 15, 0), tue = at(10, 6), later = at(10, 14), undated = { id: 'x', due: '' };
   const { near, folds } = upNext([undated, later, tue, mon, sun, late], now);
-  assert.deepEqual(near.map((t) => t.id), [late.id, sun.id, mon.id]);
-  // Monday is next week, so what is left of it is a partial fold.
-  assert.deepEqual(folds.map((f) => [f.key, f.items.length, f.of]), [['next', 1, 2], ['later', 1, 1], ['undated', 1, 1]]);
-  // Fewer than three tasks in the four days: the first three are shown.
-  assert.deepEqual(upNext([later, undated, at(10, 20)], now).near.map((t) => t.id), [later.id, '10-20-23', 'x']);
-  assert.deepEqual(upNext([], now), { near: [], folds: [] });
+  assert.deepEqual(near.map((t) => t.id), [late.id, sun.id]);
+  // Monday is next week, so it waits in the Next Week fold, however close.
+  assert.deepEqual(folds.map((f) => [f.key, f.items.map((t) => t.id)]), [['next', [mon.id, tue.id]], ['later', [later.id]], ['undated', ['x']]]);
+  // Nothing due this week leaves the list empty rather than borrowing later work.
+  assert.deepEqual(upNext([later, undated, at(10, 20)], now).near, []);
+  assert.deepEqual(upNext([], now), { past: [], near: [], folds: [] });
+});
+
+test('completed work from before today is past, never overdue', () => {
+  const now = new Date(2026, 9, 2, 14, 15); // a Friday
+  const at = (m, d, done = false) => ({ id: `${m}-${d}${done ? '-done' : ''}`, due: new Date(2026, m - 1, d, 23, 59).toISOString(), done });
+  const tasks = [at(9, 10, true), at(9, 23, true), at(9, 30), at(9, 30, true), at(10, 1, true), at(10, 2, true), at(10, 2)];
+  const { past, near } = upNext(tasks, now);
+  assert.deepEqual(past.map((t) => t.id), ['9-10-done', '9-23-done', '9-30-done', '10-1-done']);
+  assert.deepEqual(near.map((t) => t.id), ['9-30', '10-2-done', '10-2']);
+  // Past days head a day at a time back to last week's Monday, then a week at a time; open work stays under Overdue after them.
+  const heads = taskHeadings(tasks, now);
+  assert.deepEqual(heads.map((h) => [h.kind, h.items.map((t) => t.id).join()]), [
+    ['week', '9-10-done'], ['day', '9-23-done'], ['day', '9-30-done'], ['day', '10-1-done'], ['overdue', '9-30'], ['day', '10-2-done,10-2'],
+  ]);
+  assert.deepEqual(heads.slice(0, 4).map((h) => headingLabel(h, now)), [['Week of Sep 7', ''], ['Wednesday', 'Sep 23'], ['Wednesday', 'Sep 30'], ['Yesterday', 'Oct 1']]);
+  assert.equal(taskWhen(at(9, 10).due, 'week'), 'Thu');
 });
 
 test('Up Next lists the whole campus week and folds next week at the configured boundary', () => {
@@ -69,7 +85,6 @@ test('Up Next lists the whole campus week and folds next week at the configured 
     assert.deepEqual(near.map((t) => t.id), tasks.slice(0, count).map((t) => t.id));
     assert.deepEqual(folds.map((f) => f.key), ['next']);
     assert.deepEqual(folds[0].items.map((t) => t.id), tasks.slice(count).map((t) => t.id));
-    assert.equal(folds[0].of, tasks.length - count);
   }
 });
 

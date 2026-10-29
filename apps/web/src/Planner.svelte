@@ -285,7 +285,7 @@
     {/if}
     <div class="split">
       {#if editing}
-        <aside class="pane find" aria-label="Find classes" transition:paneSlide><div class="pane-body"><div class="find-head"><FindBar /></div><Find /></div></aside>
+        <aside class="pane find" aria-label="Find classes" transition:paneSlide><div class="pane-body"><div class="pane-head find-head"><FindBar /></div><div class="pane-scroll"><Find /></div></div></aside>
       {/if}
       <div class="content">
         {#if gridItems.length}
@@ -303,11 +303,9 @@
           <div class="pane-body">
             {#key app.selected}
               {#if app.selected}
-                <button class="btn flat back" onclick={() => (app.selected = '')}><Icon name="back" />Back to Tasks</button>
-                <Detail />
+                <div class="pane-scroll"><Detail /></div>
               {:else}
-                <Tasks />
-                <Alerts />
+                <Tasks framed><Alerts /></Tasks>
               {/if}
             {/key}
           </div>
@@ -415,16 +413,13 @@
   .page.classes { display: flex; flex-direction: column; gap: 12px; }
   .split { flex: 1; display: flex; min-height: 0; }
   .content { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: auto; scrollbar-gutter: stable; padding: 0 12px 16px; background: var(--view); }
-  /* The frame clips the drawer animation; its fixed-width body scrolls.
-     The native gutter stays at the scrollbar edge; equal padding centers
-     the content within the remaining width. */
+  /* The frame clips the drawer animation; its fixed-width body holds a head
+     and a scrolling part (app.css .pane-head and .pane-scroll). */
   .pane { --w: 23rem; flex: none; display: flex; align-items: flex-start; width: var(--w); min-height: 0; overflow: hidden; }
   .pane.find { justify-content: flex-end; border-right: 1px solid var(--line); }
   .pane.info { border-left: 1px solid var(--line); }
-  .pane-body { --pad: 14px; flex: none; width: calc(var(--w) - 1px); max-height: 100%; overflow: hidden auto; scrollbar-gutter: stable; padding: var(--pad); }
-  /* Offset the body's padding so the search entry sticks to the scroll edge. */
-  .find-head { position: sticky; top: calc(-1 * var(--pad)); z-index: 1; margin: calc(-1 * var(--pad)) calc(-1 * var(--pad)) 0; padding: var(--pad) var(--pad) 12px; background: var(--bg); }
-  .back { margin-bottom: 14px; }
+  .pane-body { --pad: 14px; --measure: calc(var(--w) - 1px - 2 * var(--pad)); flex: none; display: flex; flex-direction: column; width: calc(var(--w) - 1px); height: 100%; }
+  .find-head { padding-bottom: 12px; }
   /* The phone's bottom bar (app.css .viewbar) counts overdue tasks on Tasks. */
   .badge { position: absolute; top: 5px; left: calc(50% + 6px); min-width: 16px; padding: 0 4px; border-radius: 999px; background: var(--red-bg); color: var(--on-red); font-size: .66rem; font-weight: 600; line-height: 16px; }
   .actionbar { display: flex; align-items: center; gap: 6px; flex: none; padding: 7px 12px; box-shadow: inset 0 1px var(--line); }

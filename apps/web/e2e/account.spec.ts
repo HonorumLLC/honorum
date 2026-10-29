@@ -571,12 +571,10 @@ test('account Canvas connects once, syncs without local credentials, and shows t
   await page.reload(); await settle(page);
   await expect.poll(() => refreshes).toBeGreaterThan(0);
   const progress = page.getByRole('region', { name: 'Progress', exact: true });
-  const ringsHeight = (await progress.getByRole('tabpanel').boundingBox())!.height;
-  await progress.getByRole('tab', { name: 'Streak', exact: true }).click();
-  await expect(progress.getByText('3 days', { exact: true })).toBeVisible();
-  expect((await progress.getByRole('tabpanel').boundingBox())!.height).toBe(ringsHeight);
-  await expect(progress.getByText('Best 8', { exact: true })).toBeVisible();
-  await expect(progress.getByRole('img', { name: '1 of the last 28 days ended with nothing overdue' })).toBeVisible();
+  // The streak heads the card: the count, the best, and this week from Monday
+  // the 7th to the server's Friday.
+  await expect(progress.getByText('3 day streak, best 8', { exact: true })).toBeAttached();
+  await expect(progress.getByRole('img', { name: '1 of this week’s 5 days ended with nothing overdue' })).toBeVisible();
   const row = page.locator('.tasks li.row').filter({ has: page.getByText('Shared essay', { exact: true }) });
   await row.getByRole('checkbox', { name: 'Done', exact: true }).check();
   const failure = page.getByRole('status');
