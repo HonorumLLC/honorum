@@ -212,6 +212,15 @@ button.row:disabled .t { color: var(--muted); }
 .banner .btn { min-height: 28px; color: inherit; background: color-mix(in srgb, currentColor 12%, transparent); }
 @media (hover: hover) { .banner .btn:hover { background: color-mix(in srgb, currentColor 20%, transparent); } }
 
+/* A side pane: a head that stays put and, beneath it, a part that scrolls.
+   The scrolling part holds its contents to the pane's measure and lets its
+   thin scrollbar take the right inset, so nothing reflows as a scrollbar
+   comes and goes and no room is kept for one that never shows. Panes set
+   --pad and --measure. */
+.pane-head { flex: none; padding: var(--pad) var(--pad) 0; }
+.pane-scroll { flex: 1; min-height: 0; overflow: hidden auto; scrollbar-width: thin; padding: var(--pad) 0 var(--pad) var(--pad); }
+.pane-scroll > * { width: var(--measure); }
+
 /* Determinate progress. */
 .progress { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
 .progress > span { display: block; height: 100%; background: var(--accent); transition: width .2s; }

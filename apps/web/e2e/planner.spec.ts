@@ -189,12 +189,8 @@ test('the progress card counts today and this week, and a guest streak offers si
   await expect(progress.locator('.center')).toContainText(/^Today[\s\S]*\/ 1$/);
   await todayRow.press('Escape');
   await expect(todayRow).toHaveAttribute('aria-pressed', 'false');
-  // Streaks need an account. The page stands as tall as the rings.
-  const panel = progress.getByRole('tabpanel');
-  const ringsHeight = (await panel.boundingBox())!.height;
-  await progress.getByRole('tab', { name: 'Streak', exact: true }).click();
+  // Streaks need an account: the card's heading offers one above the rings.
   await expect(progress.getByRole('heading', { name: 'Keep a Streak', exact: true })).toBeVisible();
-  expect((await panel.boundingBox())!.height).toBe(ringsHeight);
   await progress.getByRole('button', { name: 'Sign In', exact: true }).click();
   await expect(page.getByRole('dialog', { name: 'Sign In', exact: true })).toBeVisible();
   await page.getByRole('dialog', { name: 'Sign In', exact: true }).press('Escape');

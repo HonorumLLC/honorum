@@ -34,7 +34,6 @@ export const SETTINGS_PAGES = ['general', 'account', 'schedule', 'assignments'];
 export const finder = $state({ filters: false, f: emptyFilters() });
 
 // How the task list is shown: one class or all, the order within each due
-// group, whether completed tasks are listed, and which Progress page shows.
-// Kept for the session so opening details or hiding the pane does not reset
-// it.
-export const taskView = $state({ filter: '', sort: 'due', showDone: false, stats: 'rings' });
+// group, and whether completed tasks are listed. Kept for the session so
+// opening details or hiding the pane does not reset it.
+export const taskView = $state({ filter: '', sort: 'due', showDone: false });
