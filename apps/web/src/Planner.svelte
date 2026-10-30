@@ -376,15 +376,14 @@
   /* The window fills #app (see app.css) rather than 100vh, which on phones runs under the browser's toolbar. */
   .window { display: flex; flex-direction: column; height: 100%; padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left); }
   /* Header bar: three alignment points; navigation at the start, actions
-     at the end, 4px apart; 12px between groups. The start and end keep their controls, so when the window is too
+     at the end, each control 6px from the next. The start and end keep their controls, so when the window is too
      narrow for a centered title the title slides toward the shorter side. */
   .headerbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; flex: none; min-height: 48px; padding: 0 6px; box-shadow: inset 0 -1px var(--line); }
   .start, .end { display: flex; align-items: center; gap: 12px; min-width: 0; }
-  .end { justify-content: flex-end; gap: 4px; }
+  .end { justify-content: flex-end; gap: 6px; }
   .tools { display: flex; align-items: center; gap: 12px; min-width: 0; }
-  .end .tools { gap: 4px; }
-  /* Add Event and Edit Classes on one ground, set apart from the pane's toggle. */
-  .group { margin-right: 8px; }
+  .end .tools { gap: 6px; }
+  /* Add Event and Edit Classes share one ground. */
   .group .btn:first-child, .pane-toggle { padding: 0 12px 0 10px; }
   .titlebox { display: flex; flex-direction: column; align-items: center; min-width: 0; padding: 4px 0; }
   .brand { display: flex; align-items: center; gap: 8px; padding: 0 4px 0 6px; color: var(--text); }
