@@ -28,5 +28,5 @@ export const app = $state({
   tasks: [], lms: { canvas: { base: '', token: '', synced: 0 }, feeds: [], map: {} },
   prefExtras: {}, // preference fields written by another client, uploaded back unchanged
   // Signed-in account ({ id, phone, device }) and the sync engine's state.
-  dataOwner: '', account: null, streak: null, sync: { status: 'idle', at: 0, error: '' },
+  dataOwner: '', account: null, streak: null, streakMissed: false, sync: { status: 'idle', at: 0, error: '' },
 });

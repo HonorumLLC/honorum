@@ -44,3 +44,18 @@ test('blocked browser storage still permits a check-in', async () => {
   await activity.visit();
   assert.equal(app.streak.current, 1);
 });
+
+test('the last streak shows before the server answers, and only a failed first check is missed', async () => {
+  const storage = memory();
+  storage.setItem('streak:a', JSON.stringify({ current: 4 }));
+  let resolve;
+  const app = { account: { id: 'a' }, streak: null };
+  const activity = createActivity({ app, storage, visible: () => true, request: () => new Promise(r => { resolve = r; }) });
+  const pending = activity.visit();
+  assert.equal(app.streak.current, 4);
+  resolve({ current: 5 }); await pending;
+  assert.equal(JSON.parse(storage.getItem('streak:a')).current, 5);
+  const fresh = { account: { id: 'b' }, streak: null };
+  await createActivity({ app: fresh, storage, visible: () => true, request: async () => { throw Error('offline'); } }).visit();
+  assert.equal(fresh.streak, null); assert.equal(fresh.streakMissed, true);
+});

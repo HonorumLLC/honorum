@@ -651,7 +651,7 @@ function clearAccountView() {
   app.schedules = []; app.tasks = []; app.watches = []; app.current = '';
   app.lms = { canvas: { base: '', token: '', synced: 0 }, feeds: [], map: {} };
   app.reminders = { id: '', on: false }; app.prefExtras = {};
-  app.dataOwner = ''; app.account = null; app.streak = null;
+  app.dataOwner = ''; app.account = null; app.streak = null; app.streakMissed = false;
   app.selected = ''; app.selectedDate = ''; app.editing = '';
   app.taskEditing = ''; app.connect = '';
   toasts.length = 0; alert.open = false; alert.buttons = [];
@@ -666,7 +666,7 @@ async function forget(preserve = true) {
     clearAccountView();
     selectTerm(app.inst, app.term);
   }
-  app.account = null; app.streak = null;
+  app.account = null; app.streak = null; app.streakMissed = false;
   if (app.lms.canvas.shared) app.lms.canvas = { base: '', token: '', synced: 0 };
   app.lms.feeds = app.lms.feeds.filter((f) => !f.shared);
   app.watches = app.watches.filter((w) => w.channel !== 'account');
@@ -689,7 +689,7 @@ export async function signOut() {
 export async function deleteAccount() {
   const account = app.account;
   await outsideSync(() => api('/me', { account: account?.id || '', method: 'DELETE' }));
-  try { localStorage.removeItem('activity:' + account.id); localStorage.removeItem('activity-zone:' + account.id); } catch {}
+  try { localStorage.removeItem('activity:' + account.id); localStorage.removeItem('activity-zone:' + account.id); localStorage.removeItem('streak:' + account.id); } catch {}
   set('google:' + account.id, null).catch(() => {});
   if (app.account !== account) return;
   await forget(false);

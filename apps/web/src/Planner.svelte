@@ -1,8 +1,8 @@
 <script>
   // The whole window. Most of the year it is a planner: a header bar with
   // the brand and week navigation at the start, the week in the middle, and
-  // every action at the end (Add Event, Edit Classes, the tasks pane's
-  // toggle and the primary menu), above the week grid and the side pane on the right with
+  // every action at the end (Add Event and Edit Classes as one linked unit,
+  // the tasks pane's toggle and the primary menu), above the week grid and the side pane on the right with
   // every task. Editing classes is a mode of the same window: a pane with
   // the search entry and its results slides in on the left, the schedule
   // menu and Done take the end, and the side pane stays as it was. Phones switch between Week, Classes and Tasks with
@@ -167,13 +167,13 @@
   const shareMenu = $derived([[
     { label: 'Share Link', disabled: !sched, action: doShare },
     { label: 'Export Calendar File', disabled: !list.length, action: exportICS },
-    { label: 'Print…', disabled: !list.length, kbd: narrow ? '' : 'Ctrl+P', action: print },
+    { label: 'Print…', disabled: !list.length, action: print },
   ]]);
   // The primary menu at the end of the header bar: sharing, then the items
   // the HIG expects there. F10 opens it.
   const mainMenu = $derived([...shareMenu, [
-    { label: 'Settings', kbd: narrow ? '' : 'Ctrl+,', action: () => (dialogs.settings = true) },
-    { label: 'Keyboard Shortcuts', kbd: narrow ? '' : 'Ctrl+?', action: () => (dialogs.shortcuts = true) },
+    { label: 'Settings', action: () => (dialogs.settings = true) },
+    { label: 'Keyboard Shortcuts', action: () => (dialogs.shortcuts = true) },
   ]]);
   let primary = $state(null), scheduleMenuRef = $state(null);
   // Tooltips carry the shortcut where there is a keyboard.
@@ -245,10 +245,13 @@
         </div>
       {:else if !narrow && sched}
         <div class="tools" in:appear>
-          <div class="group"><button class="btn flat" onclick={() => (app.editing = 'new')} title="Add Event" aria-label="Add Event"><Icon name="plus" /><span class="lbl">Event</span></button></div>
-          <!-- Reaching for the button starts reading the saved catalog. -->
-          <button class="btn flat icon" onpointerenter={ensureCatalog} onfocus={ensureCatalog} onclick={() => openClasses()} title="Edit Classes (/)" aria-label="Edit Classes"><Icon name="edit" /></button>
-          <button class="btn flat" class:on={app.pane && !app.selected} aria-pressed={app.pane && !app.selected} onclick={() => { if (app.selected) { app.selected = ''; setPane(true); } else setPane(!app.pane); }} title="Show or Hide Tasks (F9)"><Icon name="pane" /><span>Tasks</span></button>
+          <!-- The week's own edits as one linked unit, like the week controls. -->
+          <div class="group linked">
+            <button class="btn" onclick={() => (app.editing = 'new')} title="Add Event" aria-label="Add Event"><Icon name="plus" /><span class="lbl">Event</span></button>
+            <!-- Reaching for the button starts reading the saved catalog. -->
+            <button class="btn icon" onpointerenter={ensureCatalog} onfocus={ensureCatalog} onclick={() => openClasses()} title="Edit Classes (/)" aria-label="Edit Classes"><Icon name="edit" /></button>
+          </div>
+          <button class="btn flat pane-toggle" class:on={app.pane && !app.selected} aria-pressed={app.pane && !app.selected} onclick={() => { if (app.selected) { app.selected = ''; setPane(true); } else setPane(!app.pane); }} title="Show or Hide Tasks (F9)"><Icon name="pane" /><span>Tasks</span></button>
         </div>
       {/if}
       <Menu bind:this={primary} icon="menu" tooltip="Main Menu" sections={mainMenu} />
@@ -374,14 +377,16 @@
   /* The window fills #app (see app.css) rather than 100vh, which on phones runs under the browser's toolbar. */
   .window { display: flex; flex-direction: column; height: 100%; padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left); }
   /* Header bar: three alignment points; navigation at the start, actions
-     at the end, 6px apart; 12px between groups. The start and end keep their controls, so when the window is too
+     at the end, 4px apart; 12px between groups. The start and end keep their controls, so when the window is too
      narrow for a centered title the title slides toward the shorter side. */
   .headerbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; flex: none; min-height: 48px; padding: 0 6px; box-shadow: inset 0 -1px var(--line); }
   .start, .end { display: flex; align-items: center; gap: 12px; min-width: 0; }
-  .end { justify-content: flex-end; gap: 6px; }
-  .group { display: inline-flex; gap: 6px; }
+  .end { justify-content: flex-end; gap: 4px; }
   .tools { display: flex; align-items: center; gap: 12px; min-width: 0; }
-  .end .tools { gap: 6px; }
+  .end .tools { gap: 4px; }
+  /* Add Event and Edit Classes on one ground, set apart from the pane's toggle. */
+  .group { margin-right: 8px; }
+  .group .btn:first-child, .pane-toggle { padding: 0 12px 0 10px; }
   .titlebox { display: flex; flex-direction: column; align-items: center; min-width: 0; padding: 4px 0; }
   .brand { display: flex; align-items: center; gap: 8px; padding: 0 4px 0 6px; color: var(--text); }
   .brand .mark { display: block; width: 23px; height: 23px; }
@@ -430,7 +435,7 @@
     .pane-body { --pad: 12px; }
     /* Not enough room for the wordmark and the Event label beside the week: the symbol and icons only. */
     .brand .wm, .group .lbl { display: none; }
-    .group .btn { width: 34px; padding: 0; }
+    .group .btn:first-child { width: 34px; padding: 0; }
   }
   @media (max-width: 760px) {
     /* The phone's header bar: the mark, the view's title, and adjacent

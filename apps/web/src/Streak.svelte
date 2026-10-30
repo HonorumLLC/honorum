@@ -4,8 +4,8 @@
   // days as dots in the calendar's week order at the card's edge. Overdue
   // work turns today's dot red; the best run and the overdue count are in
   // the tooltips and read to screen readers. A guest sees an offer to sign
-  // in; an account whose streak has not arrived yet sees that it needs a
-  // connection. Every state stands one height, so the rings below never move.
+  // in; an account shows its last streak at once, holds the line empty on
+  // its first check, and says it needs a connection if that check fails. Every state stands one height, so the rings below never move.
   //
   // Motion: the flame rises while the numbers count up, the days fade in in
   // date order and today's ring settles, all within about a second. A new
@@ -68,8 +68,10 @@
     <span class="fl" class:off={!streak} bind:this={flame}><Flame size={20} /></span>
     {#if streak}
       <h3 class="text"><span class="sr">{said}</span><span aria-hidden="true"><Count value={streak.current} delay={entered ? 350 : 80} hold /> day streak</span></h3>
-    {:else if app.account}
+    {:else if app.account && app.streakMissed}
       <h3 class="text waiting">Connect to update your streak</h3>
+    {:else if app.account}
+      <span class="text" aria-hidden="true"></span>
     {:else}
       <h3 class="text">Keep a Streak</h3>
     {/if}

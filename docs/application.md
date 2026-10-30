@@ -401,8 +401,9 @@ week's days as dots at the card's edge in the calendar's week order and today
 outlined. While tasks are overdue, today's dot turns red; the heading does not
 change. The heading's tooltip gives the best streak, today's dot's tooltip
 gives the overdue count, and screen readers hear both. Guests see Keep a
-Streak and Sign In; an account whose streak has not arrived yet sees Connect
-to update your streak. Every state has the same height, so the rings never
+Streak and Sign In. An account sees its last streak from the device at once
+while the server is asked again; on a device's first check the heading waits
+empty, and only a failed check shows Connect to update your streak. Every state has the same height, so the rings never
 move. The flame, the heading's capitals, and the dots share one center line.
 The flame's widest point meets the rings' outer edge, and the last dot or Sign
 In ends where the percentages' ink does.
@@ -515,7 +516,7 @@ For institution data requests, use the installation's configured `contact` addre
 ## 14. Web interface
 
 The desktop app shows a weekly calendar with a side pane for tasks or item details.
-The header holds the week controls at the start and its actions at the end: Add Event, Edit Classes, Tasks, and the main menu.
+The header holds the week controls at the start and its actions at the end: Add Event and Edit Classes as one linked pair, like the week controls, then Tasks and the main menu.
 The menu holds share actions, Settings, and Keyboard Shortcuts.
 Add Event uses the selected day as its default.
 
