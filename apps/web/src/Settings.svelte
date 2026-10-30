@@ -179,7 +179,7 @@
     {#if app.account}
       <div class="list">
         <div class="row"><span class="rt"><span class="t">{app.account.phone}</span></span><span class="value" title={app.sync.error || ''}>{syncText}</span></div>
-        <div class="row"><span class="rt"><span class="t">Streak</span><span class="s">{app.streak ? `Days with no tasks overdue · Best: ${app.streak.longest} ${app.streak.longest === 1 ? 'day' : 'days'}` : 'Connect to update your streak'}</span></span><span class="value">{app.streak ? `${app.streak.current} ${app.streak.current === 1 ? 'day' : 'days'}` : 'Pending'}</span></div>
+        <div class="row"><span class="rt"><span class="t">Streak</span><span class="s">{app.streak ? `Days with no tasks overdue · Best: ${app.streak.longest} ${app.streak.longest === 1 ? 'day' : 'days'}` : app.streakMissed ? 'Connect to update your streak' : 'Days with no tasks overdue'}</span></span><span class="value">{app.streak ? `${app.streak.current} ${app.streak.current === 1 ? 'day' : 'days'}` : 'Pending'}</span></div>
         {#if conflicts.length}
           <button type="button" class="row" onclick={() => (recovery = conflicts)}><span class="rt"><span class="t">Recover Conflicting Edits</span></span><span class="chev"><Icon name="next" /></span></button>
         {/if}
