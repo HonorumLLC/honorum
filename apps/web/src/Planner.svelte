@@ -8,6 +8,7 @@
   // menu and Done take the end, and the side pane stays as it was. Phones switch between Week, Classes and Tasks with
   // a bottom bar; details open as a sheet.
   import { app, closures, previewItems, schedule, mySchedules, institution, selectTerm, section, items, itemOf, colorOf, termInfo, firstDay, newSchedule, setPrimary, deleteSchedule, applySections, autoArrange, shareLink, taskCourseCode, taskColor, openClasses, closeClasses, ensureCatalog, select, setPane } from './lib/state.svelte.js';
+  import { untrack } from 'svelte';
   import { cancelSolver } from './lib/solverClient.js';
   import { conflictIds, itemsConflict } from './lib/schedule.js';
   import { addDays, ymd } from './lib/dates.js';
@@ -17,7 +18,7 @@
   import { toast, dialogs } from './lib/ui.svelte.js';
   import { fade, slide } from 'svelte/transition';
   import { cubicOut } from 'svelte/easing';
-  import { still, easeOpen, easeClose, OPEN, CLOSE } from './lib/motion.js';
+  import { still, drawer } from './lib/motion.js';
   import { MARK, WORDMARK } from './wordmark.js';
   import Icon from './Icon.svelte';
   import Menu from './Menu.svelte';
@@ -54,18 +55,16 @@
   // contents at full width so nothing rewraps on the way.
   const appear = (node) => (still() ? { duration: 0 } : fade(node, { duration: 150 }));
   const reveal = (node) => (still() ? { duration: 0 } : slide(node, { duration: 200, easing: cubicOut }));
-  // A pane opens like a drawer: it widens from the window's edge with its
-  // contents riding the opening edge, and fades up in the first part of the
-  // way. Closing retraces it, shorter. Toggling back midway turns around from
-  // where it is.
-  function paneSlide(node) {
-    const w = node.getBoundingClientRect().width;
-    return ({ direction }) => {
-      if (still()) return { duration: 0 };
-      const open = direction === 'in';
-      return { duration: open ? OPEN : CLOSE, easing: open ? easeOpen : easeClose, css: (t) => `width: ${t * w}px; opacity: ${Math.min(1, t * 2.5)}` };
-    };
-  }
+  // The panes open and close as drawers (see lib/motion.js) and keep their
+  // contents while shut. The side pane is made with the window. The class
+  // finder is made the first time classes are edited, since it loads the
+  // catalog, and slides in then unless the window opened editing.
+  const finderAtStart = untrack(() => app.view === 'classes');
+  let finderMade = $state(finderAtStart);
+  $effect.pre(() => { if (editing) finderMade = true; });
+  // Whether the side pane's list is on screen: from when it starts to open
+  // until it has finished closing.
+  let infoShown = $state(false);
 
   // A section picked in the finder but not yet added is drawn as a ghost.
   const preview = $derived.by(() => {
@@ -285,8 +284,8 @@
       <div class="banner error" transition:reveal><span>Some classes overlap</span><button class="btn" onclick={() => (arr = { ...arr, open: true, openOnly: false })} disabled={arr.previewing}>Rearrange Sections…</button></div>
     {/if}
     <div class="split">
-      {#if editing}
-        <aside class="pane find" aria-label="Find classes" transition:paneSlide><div class="pane-body"><div class="pane-head find-head"><FindBar /></div><div class="pane-scroll"><Find /></div></div></aside>
+      {#if !narrow && finderMade}
+        <aside class="pane find" aria-label="Find classes" use:drawer={{ open: editing, side: -1, appear: !finderAtStart }}><div class="pane-body"><div class="pane-head find-head"><FindBar /></div><div class="pane-scroll"><Find /></div></div></aside>
       {/if}
       <div class="content">
         {#if gridItems.length}
@@ -299,14 +298,14 @@
           </div>
         {/if}
       </div>
-      {#if !narrow && (editing || app.pane)}
-        <aside class="pane info" aria-label="Side pane" transition:paneSlide>
+      {#if !narrow}
+        <aside class="pane info" aria-label="Side pane" use:drawer={{ open: editing || app.pane, side: 1, onshown: (on) => (infoShown = on) }}>
           <div class="pane-body">
             {#key app.selected}
               {#if app.selected}
                 <div class="pane-scroll"><Detail /></div>
               {:else}
-                <Tasks framed><Alerts /></Tasks>
+                <Tasks framed onscreen={infoShown}><Alerts /></Tasks>
               {/if}
             {/key}
           </div>
@@ -414,14 +413,24 @@
   @media (pointer: coarse) { .tabstrip .tab { min-height: 40px; } .tabstrip .tab.add { width: 40px; } }
   .page { flex: 1; min-height: 0; overflow-y: auto; padding: 12px; background: var(--view); }
   .page.classes { display: flex; flex-direction: column; gap: 12px; }
-  .split { flex: 1; display: flex; min-height: 0; }
-  .content { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: auto; scrollbar-gutter: stable; padding: 0 12px 16px; background: var(--view); }
-  /* The frame clips the drawer animation; its fixed-width body holds a head
-     and a scrolling part (app.css .pane-head and .pane-scroll). */
-  .pane { --w: 23rem; flex: none; display: flex; align-items: flex-start; width: var(--w); min-height: 0; overflow: hidden; }
-  .pane.find { justify-content: flex-end; border-right: 1px solid var(--line); }
-  .pane.info { border-left: 1px solid var(--line); }
-  .pane-body { --pad: 14px; --measure: calc(var(--w) - 1px - 2 * var(--pad)); flex: none; display: flex; flex-direction: column; width: calc(var(--w) - 1px); height: 100%; }
+  .split { position: relative; flex: 1; display: flex; min-height: 0; overflow: clip; }
+  .content { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow: auto; scrollbar-gutter: stable; padding: 0 12px 16px; background: var(--view); isolation: isolate; }
+  /* A pane's frame is the room the week gives up; its body is laid over the
+     frame from the window's edge, and holds a head and a scrolling part
+     (app.css .pane-head and .pane-scroll). The body keeps its size and place
+     while the frame changes, and contains its own layout and painting, so
+     moving it only moves its layer. It may lead the week's edge by a frame
+     when the page is busy, so it sits above the week, whose layers stay
+     inside it. */
+  .pane { --w: 23rem; flex: none; width: var(--w); }
+  .pane-body { --pad: 14px; --measure: calc(var(--w) - 1px - 2 * var(--pad)); position: absolute; z-index: 1; top: 0; bottom: 0; display: flex; flex-direction: column; width: var(--w); background: var(--bg); contain: strict; will-change: transform; }
+  .pane.find .pane-body { left: 0; border-right: 1px solid var(--line); }
+  .pane.info .pane-body { right: 0; border-left: 1px solid var(--line); }
+  /* Shut, the body waits past the window's edge without drawing its contents. */
+  .pane:global(.shut) { width: 0; }
+  .pane:global(.shut) .pane-body { content-visibility: hidden; }
+  .pane.find:global(.shut) .pane-body { transform: translateX(-100%); }
+  .pane.info:global(.shut) .pane-body { transform: translateX(100%); }
   .find-head { padding-bottom: 12px; }
   /* The phone's bottom bar (app.css .viewbar) counts overdue tasks on Tasks. */
   .badge { position: absolute; top: 5px; left: calc(50% + 6px); min-width: 16px; padding: 0 4px; border-radius: 999px; background: var(--red-bg); color: var(--on-red); font-size: .66rem; font-weight: 600; line-height: 16px; }
