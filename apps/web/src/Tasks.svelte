@@ -27,11 +27,17 @@
   import Menu from './Menu.svelte';
   import Stats from './Stats.svelte';
 
-  let { framed = false, children } = $props();
+  // onscreen: whether the list is on screen. The side pane keeps the list
+  // while shut, so it opens without building it again; once the list has
+  // left the screen it drops its search and folds. Progress is made when the
+  // list first comes on screen, so its entrance plays there.
+  let { framed = false, onscreen = true, children } = $props();
   let q = $state('');
   // Folds open for as long as the list is on screen, sliding open and shut
   // (see unfold in lib/motion.js).
   let opened = $state({});
+  let progress = $state(untrack(() => onscreen));
+  $effect(() => { if (onscreen) progress = true; else { q = ''; opened = {}; } });
   const syncing = $derived(lmsSync.owner === app.lms && lmsSync.pending);
   const syncError = $derived(lmsSync.owner === app.lms ? lmsSync.error : '');
   const courses = $derived(taskCourses());
@@ -207,7 +213,7 @@
     </div>
   {:else}
   <div class="head" class:pane-head={framed}>
-    <Stats />
+    {#if progress}<Stats />{/if}
     <div class="toolbar" bind:this={bar}>
       {#if app.tasks.length}
         <label class="entry grow"><Icon name="search" /><input type="search" placeholder="Search tasks…" bind:value={q} onkeydown={(e) => { if (e.key === 'Escape') { e.preventDefault(); q = ''; } }} aria-label="Search tasks"><button type="button" class="clear" onclick={() => (q = '')} aria-label="Clear"><Icon name="close" /></button></label>

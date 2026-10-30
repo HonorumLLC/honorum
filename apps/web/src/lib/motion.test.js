@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { easeOpen, easeClose } from './motion.js';
+import { easeOpen, easeClose, EASE_OPEN, EASE_CLOSE } from './motion.js';
 
 // The curve a CSS cubic-bezier draws, found by bisection for reference.
 function reference(css) {
@@ -16,8 +16,9 @@ function reference(css) {
 
 test('the transition curves match the stylesheet curves', () => {
   const stylesheet = readFileSync(new URL('../app.css', import.meta.url), 'utf8');
-  for (const [ease, name] of [[easeOpen, 'open'], [easeClose, 'close']]) {
+  for (const [ease, name, string] of [[easeOpen, 'open', EASE_OPEN], [easeClose, 'close', EASE_CLOSE]]) {
     const css = stylesheet.match(new RegExp(`--ease-${name}:\\s*([^;]+);`))[1];
+    assert.equal(string, css);
     const want = reference(css);
     assert.equal(ease(0), 0);
     assert.equal(ease(1), 1);

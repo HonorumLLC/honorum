@@ -32,6 +32,57 @@ function bezier(x1, y1, x2, y2) {
 }
 export const easeOpen = bezier(.35, .75, .25, 1);
 export const easeClose = bezier(.4, 0, .2, 1);
+export const EASE_OPEN = 'cubic-bezier(.35, .75, .25, 1)', EASE_CLOSE = 'cubic-bezier(.4, 0, .2, 1)';
+
+// A side pane, as a drawer at the window's edge: an empty frame whose width
+// is the room the week gives up, and the pane's body, kept at full width at
+// the edge. Opening widens the frame from nothing while the body slides in
+// beside it, fading up in the first part of the way; closing retraces it,
+// shorter; turning back midway starts from where it is. The frame's width
+// is layout, but the body moves by transform and opacity, which the
+// compositor runs, so a long list is neither laid out nor painted again as
+// it moves, and keeps moving if the page is busy. Shut, the frame keeps
+// the body, inert and unrendered with its layout kept, so it opens again at
+// once. side is -1 for a pane at the start of the window and 1 at the end;
+// appear opens it from shut when it is made open; onshown(on) says when the
+// body comes on screen and when it has left.
+export function drawer(frame, params) {
+  const body = frame.firstElementChild;
+  let { open, side, onshown } = params, shown, anims = [];
+  const settle = () => {
+    for (const a of anims) a.cancel();
+    anims = [];
+    frame.classList.toggle('shut', !open);
+    frame.inert = !open;
+    if (shown !== open) onshown?.((shown = open));
+  };
+  function toggle(next) {
+    if (next === open) return;
+    const full = body.offsetWidth;
+    const from = frame.classList.contains('shut') ? 0 : Math.min(1, frame.getBoundingClientRect().width / full);
+    open = next;
+    for (const a of anims) a.cancel();
+    frame.classList.remove('shut');
+    frame.inert = false;
+    if (open && !shown) onshown?.((shown = true));
+    const to = open ? 1 : 0;
+    if (still() || from === to) { settle(); return; }
+    const duration = (open ? OPEN : CLOSE) * Math.abs(to - from), ease = open ? easeOpen : easeClose;
+    const timing = { duration, easing: open ? EASE_OPEN : EASE_CLOSE, fill: 'forwards' };
+    const at = (p) => `translateX(${(1 - p) * side * 100}%)`;
+    anims = [
+      frame.animate({ width: [`${from * full}px`, `${to * full}px`] }, timing),
+      body.animate({ transform: [at(from), at(to)] }, timing),
+      body.animate({ opacity: Array.from({ length: 13 }, (_, i) => Math.min(1, 2.5 * (from + (to - from) * ease(i / 12)))) }, { duration, fill: 'forwards' }),
+    ];
+    anims[0].onfinish = settle;
+  }
+  if (params.appear && open) { open = false; settle(); toggle(true); } else settle();
+  return {
+    update(p) { onshown = p.onshown; toggle(p.open); },
+    destroy() { for (const a of anims) a.cancel(); },
+  };
+}
 
 // A drawer's height, opening and closing: the list below moves with its
 // edge, and its contents fade in the first part of the way.

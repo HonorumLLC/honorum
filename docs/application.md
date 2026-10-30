@@ -419,7 +419,8 @@ week, and the term record lives in the app's defaults. A closed ring draws a
 check. Account's profile card shows the streak page: the same count, best,
 overdue count, and four-week dots for a signed-in account.
 
-Card animations settle within about one second.
+Card animations settle within about one second. On the web they play when the card
+first appears, not each time the task pane reopens.
 Ring arcs appear from the outer ring inward. Streak days appear in date order.
 Numbers count up to their values. Text after a count holds still while it
 runs; when the final value is wider or narrower, the text glides there on the
@@ -576,6 +577,8 @@ On phones, Back returns from a Settings page to its page list.
 
 Surfaces open in about one third of a second and close slightly faster.
 Their contents move with them. A reversed action starts from the current position.
+Side panes keep their contents and scroll position while hidden and reopen as they were.
+Hiding the task pane clears its search.
 Menus expand from their buttons in about one sixth of a second.
 
 Carets and chevrons reflect the open state.
